@@ -1,0 +1,2638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Daily</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2156c4">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Python Daily">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow study column; a "today" slab on top, a numbered lesson ledger below. */
+:root{
+  --bg:#f2f5f8; --surface:#ffffff; --sunk:#e8edf2; --ink:#15202c; --muted:#566473; --line:#d5dde5;
+  --accent:#2156c4; --accent-ink:#ffffff; --mark:#f0bf2c;
+  --easy:#1f8a5b; --medium:#b26a00; --hard:#c23b3b;
+  --code-bg:#101822; --code-ink:#e4ebf3;
+  --display:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a; --surface:#182029; --sunk:#111820; --ink:#e5ebf2; --muted:#94a2b1; --line:#2a3542;
+    --accent:#7ea8ff; --accent-ink:#0c1420; --mark:#f0bf2c;
+    --easy:#4fc48f; --medium:#f0a941; --hard:#ff7b7b;
+    --code-bg:#0a0f15; --code-ink:#dfe7f0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#182029; --sunk:#111820; --ink:#e5ebf2; --muted:#94a2b1; --line:#2a3542;
+  --accent:#7ea8ff; --accent-ink:#0c1420; --mark:#f0bf2c;
+  --easy:#4fc48f; --medium:#f0a941; --hard:#ff7b7b;
+  --code-bg:#0a0f15; --code-ink:#dfe7f0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px;display:flex;flex-direction:column;gap:20px}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:22px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:8px}
+.brand i{width:12px;height:12px;border-radius:3px;background:var(--mark);display:inline-block;box-shadow:6px 6px 0 var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--muted);font-variant-numeric:tabular-nums}
+.chip.streak{background:var(--mark);color:#201a00;font-weight:600}
+
+.today{background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.today .eyebrow{font-size:13px;opacity:.85}
+.today h1{font-size:28px}
+.today p{opacity:.92}
+.bar{height:8px;border-radius:99px;background:color-mix(in srgb,var(--accent-ink) 25%,transparent);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--mark);border-radius:99px}
+.today .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.today .count{font-size:14px;font-variant-numeric:tabular-nums}
+.go{background:var(--accent-ink);color:var(--accent);border:0;border-radius:10px;padding:10px 16px;font-weight:600;text-decoration:none;display:inline-block}
+
+.ledger{display:flex;flex-direction:column;gap:8px}
+.ledger h2{font-size:20px}
+.ledger > .cx{margin-bottom:4px}
+.lrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;color:var(--ink)}
+.lrow:hover{border-color:var(--accent)}
+.lrow .num{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.lrow .t{font-weight:600}
+.lrow .b{font-size:14px;color:var(--muted)}
+.dots{display:flex;gap:4px}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.dot.done.E{background:var(--easy);border-color:var(--easy)}
+.dot.done.M{background:var(--medium);border-color:var(--medium)}
+.dot.done.H{background:var(--hard);border-color:var(--hard)}
+
+.back{font-size:14px;text-decoration:none}
+.lesson-head{display:flex;flex-direction:column;gap:6px}
+.lesson-head .num{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.lesson-head h1{font-size:30px}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.sec h2{font-size:19px}
+.sec h3{font-size:16px}
+.sec p,.sec li{max-width:65ch}
+.sec ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+code{font-family:var(--mono);font-size:.9em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:14px;line-height:1.5;padding:14px;border-radius:10px;overflow-x:auto;white-space:pre;tab-size:4}
+.cx{font-size:14px;color:var(--muted)}
+.readbox{display:flex;align-items:center;gap:8px;font-size:15px}
+.readbox input{width:18px;height:18px;accent-color:var(--accent)}
+details summary{cursor:pointer;font-size:14px;color:var(--muted)}
+details pre{margin-top:8px}
+
+.prob{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.prob.E{border-left-color:var(--easy)} .prob.M{border-left-color:var(--medium)} .prob.H{border-left-color:var(--hard)}
+.prob.done{background:color-mix(in srgb,var(--easy) 7%,var(--surface))}
+.phead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.pill{font-weight:600;font-size:12px;padding:2px 9px;border-radius:999px;color:#fff}
+.pill.E{background:var(--easy)} .pill.M{background:var(--medium)} .pill.H{background:var(--hard)}
+:root[data-theme="dark"] .pill{color:#0c1420}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill{color:#0c1420}}
+.prob h3{font-size:18px}
+textarea.code{width:100%;min-height:150px;resize:vertical;background:var(--code-bg);color:var(--code-ink);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--mono);font-size:14px;line-height:1.5;tab-size:4;white-space:pre;overflow:auto}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 13px;font-size:14px;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.solved{background:var(--easy);border-color:var(--easy);color:#fff}
+.btn[disabled]{opacity:.55;cursor:default}
+.needs-ai{display:none}
+body.ai .needs-ai{display:inline-block}
+body.ai .no-ai{display:none}
+.panel{border-radius:10px;padding:12px;font-size:14.5px;display:flex;flex-direction:column;gap:8px}
+.panel.out{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:13.5px;white-space:pre-wrap;overflow-x:auto;word-break:break-word}
+.panel.out.err{box-shadow:inset 3px 0 0 var(--hard)}
+.panel.note{background:var(--sunk)}
+.panel .lbl{font-size:12px;font-weight:600;color:var(--muted);font-family:var(--body)}
+.panel .txt{white-space:pre-wrap}
+.no-ai{font-size:13px;color:var(--muted)}
+.nav2{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot{font-size:13px;color:var(--muted)}
+[hidden]{display:none !important}
+@media (max-width:600px){
+  textarea.code{font-size:16px}
+  .today h1{font-size:24px}.lesson-head h1{font-size:26px}
+  .lrow{grid-template-columns:auto 1fr}.lrow .dots{grid-column:2}
+}
+@media (prefers-reduced-motion: no-preference){.bar span{transition:width .4s}}
+.CodeMirror {
+font-family: monospace;
+height: 300px;
+color: black;
+direction: ltr;
+}
+.CodeMirror-lines {
+padding: 4px 0;
+}
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+padding: 0 4px;
+}
+.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+background-color: white;
+}
+.CodeMirror-gutters {
+border-right: 1px solid #ddd;
+background-color: #f7f7f7;
+white-space: nowrap;
+}
+.CodeMirror-linenumbers {}
+.CodeMirror-linenumber {
+padding: 0 3px 0 5px;
+min-width: 20px;
+text-align: right;
+color: #999;
+white-space: nowrap;
+}
+.CodeMirror-guttermarker { color: black; }
+.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-cursor {
+border-left: 1px solid black;
+border-right: none;
+width: 0;
+}
+.CodeMirror div.CodeMirror-secondarycursor {
+border-left: 1px solid silver;
+}
+.cm-fat-cursor .CodeMirror-cursor {
+width: auto;
+border: 0 !important;
+background: #7e7;
+}
+.cm-fat-cursor div.CodeMirror-cursors {
+z-index: 1;
+}
+.cm-fat-cursor .CodeMirror-line::selection,
+.cm-fat-cursor .CodeMirror-line > span::selection,
+.cm-fat-cursor .CodeMirror-line > span > span::selection { background: transparent; }
+.cm-fat-cursor .CodeMirror-line::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span > span::-moz-selection { background: transparent; }
+.cm-fat-cursor { caret-color: transparent; }
+@-moz-keyframes blink {
+0% {}
+50% { background-color: transparent; }
+100% {}
+}
+@-webkit-keyframes blink {
+0% {}
+50% { background-color: transparent; }
+100% {}
+}
+@keyframes blink {
+0% {}
+50% { background-color: transparent; }
+100% {}
+}
+.CodeMirror-overwrite .CodeMirror-cursor {}
+.cm-tab { display: inline-block; text-decoration: inherit; }
+.CodeMirror-rulers {
+position: absolute;
+left: 0; right: 0; top: -50px; bottom: 0;
+overflow: hidden;
+}
+.CodeMirror-ruler {
+border-left: 1px solid #ccc;
+top: 0; bottom: 0;
+position: absolute;
+}
+.cm-s-default .cm-header {color: blue;}
+.cm-s-default .cm-quote {color: #090;}
+.cm-negative {color: #d44;}
+.cm-positive {color: #292;}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-link {text-decoration: underline;}
+.cm-strikethrough {text-decoration: line-through;}
+.cm-s-default .cm-keyword {color: #708;}
+.cm-s-default .cm-atom {color: #219;}
+.cm-s-default .cm-number {color: #164;}
+.cm-s-default .cm-def {color: #00f;}
+.cm-s-default .cm-variable,
+.cm-s-default .cm-punctuation,
+.cm-s-default .cm-property,
+.cm-s-default .cm-operator {}
+.cm-s-default .cm-variable-2 {color: #05a;}
+.cm-s-default .cm-variable-3, .cm-s-default .cm-type {color: #085;}
+.cm-s-default .cm-comment {color: #a50;}
+.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-string-2 {color: #f50;}
+.cm-s-default .cm-meta {color: #555;}
+.cm-s-default .cm-qualifier {color: #555;}
+.cm-s-default .cm-builtin {color: #30a;}
+.cm-s-default .cm-bracket {color: #997;}
+.cm-s-default .cm-tag {color: #170;}
+.cm-s-default .cm-attribute {color: #00c;}
+.cm-s-default .cm-hr {color: #999;}
+.cm-s-default .cm-link {color: #00c;}
+.cm-s-default .cm-error {color: #f00;}
+.cm-invalidchar {color: #f00;}
+.CodeMirror-composing { border-bottom: 2px solid; }
+div.CodeMirror span.CodeMirror-matchingbracket {color: #0b0;}
+div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
+.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }
+.CodeMirror-activeline-background {background: #e8f2ff;}
+.CodeMirror {
+position: relative;
+overflow: hidden;
+background: white;
+}
+.CodeMirror-scroll {
+overflow: scroll !important;
+margin-bottom: -50px; margin-right: -50px;
+padding-bottom: 50px;
+height: 100%;
+outline: none;
+position: relative;
+z-index: 0;
+}
+.CodeMirror-sizer {
+position: relative;
+border-right: 50px solid transparent;
+}
+.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+position: absolute;
+z-index: 6;
+display: none;
+outline: none;
+}
+.CodeMirror-vscrollbar {
+right: 0; top: 0;
+overflow-x: hidden;
+overflow-y: scroll;
+}
+.CodeMirror-hscrollbar {
+bottom: 0; left: 0;
+overflow-y: hidden;
+overflow-x: scroll;
+}
+.CodeMirror-scrollbar-filler {
+right: 0; bottom: 0;
+}
+.CodeMirror-gutter-filler {
+left: 0; bottom: 0;
+}
+.CodeMirror-gutters {
+position: absolute; left: 0; top: 0;
+min-height: 100%;
+z-index: 3;
+}
+.CodeMirror-gutter {
+white-space: normal;
+height: 100%;
+display: inline-block;
+vertical-align: top;
+margin-bottom: -50px;
+}
+.CodeMirror-gutter-wrapper {
+position: absolute;
+z-index: 4;
+background: none !important;
+border: none !important;
+}
+.CodeMirror-gutter-background {
+position: absolute;
+top: 0; bottom: 0;
+z-index: 4;
+}
+.CodeMirror-gutter-elt {
+position: absolute;
+cursor: default;
+z-index: 4;
+}
+.CodeMirror-gutter-wrapper ::selection { background-color: transparent }
+.CodeMirror-gutter-wrapper ::-moz-selection { background-color: transparent }
+.CodeMirror-lines {
+cursor: text;
+min-height: 1px;
+}
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+-moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+border-width: 0;
+background: transparent;
+font-family: inherit;
+font-size: inherit;
+margin: 0;
+white-space: pre;
+word-wrap: normal;
+line-height: inherit;
+color: inherit;
+z-index: 2;
+position: relative;
+overflow: visible;
+-webkit-tap-highlight-color: transparent;
+-webkit-font-variant-ligatures: contextual;
+font-variant-ligatures: contextual;
+}
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
+word-wrap: break-word;
+white-space: pre-wrap;
+word-break: normal;
+}
+.CodeMirror-linebackground {
+position: absolute;
+left: 0; right: 0; top: 0; bottom: 0;
+z-index: 0;
+}
+.CodeMirror-linewidget {
+position: relative;
+z-index: 2;
+padding: 0.1px;
+}
+.CodeMirror-widget {}
+.CodeMirror-rtl pre { direction: rtl; }
+.CodeMirror-code {
+outline: none;
+}
+.CodeMirror-scroll,
+.CodeMirror-sizer,
+.CodeMirror-gutter,
+.CodeMirror-gutters,
+.CodeMirror-linenumber {
+-moz-box-sizing: content-box;
+box-sizing: content-box;
+}
+.CodeMirror-measure {
+position: absolute;
+width: 100%;
+height: 0;
+overflow: hidden;
+visibility: hidden;
+}
+.CodeMirror-cursor {
+position: absolute;
+pointer-events: none;
+}
+.CodeMirror-measure pre { position: static; }
+div.CodeMirror-cursors {
+visibility: hidden;
+position: relative;
+z-index: 3;
+}
+div.CodeMirror-dragcursors {
+visibility: visible;
+}
+.CodeMirror-focused div.CodeMirror-cursors {
+visibility: visible;
+}
+.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }
+.CodeMirror-crosshair { cursor: crosshair; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: #d7d4f0; }
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #d7d4f0; }
+.cm-searching {
+background-color: #ffa;
+background-color: rgba(255, 255, 0, .4);
+}
+.cm-force-border { padding-right: .1px; }
+@media print {
+.CodeMirror div.CodeMirror-cursors {
+visibility: hidden;
+}
+}
+.cm-tab-wrap-hack:after { content: ''; }
+span.CodeMirror-selectedtext { background: none; }
+
+/* code editor */
+.CodeMirror{height:auto;min-height:170px;background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:14px;line-height:1.55;border:1px solid var(--line);border-radius:10px;padding:6px 0}
+.play .CodeMirror{min-height:340px}
+.CodeMirror-focused{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+.CodeMirror-gutters{background:var(--code-bg);border-right:1px solid #243041;border-radius:10px 0 0 10px}
+.CodeMirror-linenumber{color:#5f6f81;padding:0 8px 0 4px}
+.CodeMirror-cursor{border-left:2px solid #f0bf2c}
+.CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected{background:rgba(126,168,255,.28)}
+.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:rgba(126,168,255,.28)}
+.CodeMirror-matchingbracket{color:#fff !important;background:rgba(240,191,44,.3);border-radius:2px}
+.cm-s-default .cm-keyword{color:#c792ea}
+.cm-s-default .cm-def{color:#82aaff}
+.cm-s-default .cm-variable{color:#e4ebf3}
+.cm-s-default .cm-variable-2{color:#e4ebf3}
+.cm-s-default .cm-builtin{color:#ffcb6b}
+.cm-s-default .cm-string,.cm-s-default .cm-string-2{color:#c3e88d}
+.cm-s-default .cm-number{color:#f78c6c}
+.cm-s-default .cm-comment{color:#6b7c8f;font-style:italic}
+.cm-s-default .cm-operator{color:#89ddff}
+.cm-s-default .cm-property{color:#9ccfff}
+.cm-s-default .cm-meta{color:#ffcb6b}
+.cm-s-default .cm-atom{color:#f78c6c}
+.cm-s-default .cm-error{color:#ff7b7b}
+@media (max-width:600px){.CodeMirror{font-size:15px}}
+/* test results */
+.panel.results{background:var(--sunk);border-left:4px solid var(--line)}
+.panel.results.pass{border-left-color:var(--easy);background:color-mix(in srgb,var(--easy) 10%,var(--surface))}
+.panel.results.fail{border-left-color:var(--hard)}
+.rhead{font-weight:600;font-size:15px}
+.panel.results pre{white-space:pre-wrap;word-break:break-word}
+ul.tests{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.tests li{display:grid;grid-template-columns:20px 1fr;gap:6px;align-items:start}
+ul.tests .mark{font-weight:700}
+ul.tests li.ok .mark{color:var(--easy)}
+ul.tests li.no .mark{color:var(--hard)}
+ul.tests code{word-break:break-word}
+ul.tests .diff{display:block;font-size:13.5px;color:var(--muted);word-break:break-word;margin-top:2px}
+.toplinks{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.toplinks a{font-size:14px;font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#home"><i></i>Python Daily</a>
+    <div class="toplinks">
+      <a href="#playground">Playground</a>
+      <span class="chip" id="sync">Saved on this device</span>
+    </div>
+  </header>
+  <main id="view"></main>
+  <p class="foot">Go at your own pace. Your code and progress are saved on this device as you type.</p>
+</div>
+
+<script>
+const LIST_PRELUDE = `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def build(values):
+    dummy = ListNode()
+    node = dummy
+    for v in values:
+        node.next = ListNode(v)
+        node = node.next
+    return dummy.next
+
+def to_list(node):
+    out = []
+    while node:
+        out.append(node.val)
+        node = node.next
+    return out
+`;
+const TREE_PRELUDE = `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def tree(values):
+    if not values:
+        return None
+    root = TreeNode(values[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(values):
+        node = queue.popleft()
+        if values[i] is not None:
+            node.left = TreeNode(values[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(values) and values[i] is not None:
+            node.right = TreeNode(values[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def flat(root):
+    out, queue = [], deque([root])
+    while queue:
+        node = queue.popleft()
+        if node:
+            out.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
+    return out
+`;
+
+const LESSONS = [
+{ title:"Python fundamentals and Big O", blurb:"Variables, loops, functions, and how to measure speed",
+  concept:[
+    "Python needs no type declarations: `count = 0`, `name = \"leet\"`, `found = True`. Integers never overflow.",
+    "There are two divisions. `7 / 2` is `3.5`, `7 // 2` is `3` (floor), and `7 % 2` is `1` (remainder). `x % 10` gives the last digit of a number and `x // 10` removes it.",
+    "`range(5)` counts 0 to 4. `range(2, 10, 3)` gives 2, 5, 8. `enumerate(nums)` gives the index and the value together.",
+    "Big O describes how the work grows as the input grows. One loop over n items is O(n). A loop inside a loop is O(n²). Halving the input each step is O(log n). A few extra variables is O(1) space; a new list of n items is O(n) space."
+  ],
+  code:`nums = [4, 8, 15]
+nums.append(16)        # [4, 8, 15, 16]
+nums[0], nums[-1]      # 4 and 16
+nums[1:3]              # [8, 15]
+
+for i, n in enumerate(nums):
+    print(i, n)
+
+def add(a, b):
+    return a + b`,
+  worked:{ lc:9, title:"Palindrome Number",
+    problem:"Return True if the integer x reads the same forwards and backwards. 121 is True; -121 and 10 are False.",
+    steps:["Negative numbers can never be palindromes, so return False early.",
+           "Reverse the number: take the last digit with `x % 10`, add it to `rev * 10`, then drop it with `x //= 10`.",
+           "Trace 121: rev goes 1, 12, 121 while x goes 12, 1, 0.",
+           "Compare the reversed number with the original."],
+    code:`def isPalindrome(x):
+    if x < 0:
+        return False
+    original = x
+    rev = 0
+    while x > 0:
+        rev = rev * 10 + x % 10
+        x //= 10
+    return rev == original`,
+    cx:"Time O(d) for d digits, which is O(log x). Space O(1)." },
+  problems:[
+    { lc:412, d:"E", title:"Fizz Buzz", text:"Return a list of strings for 1 to n: \"Fizz\" for multiples of 3, \"Buzz\" for multiples of 5, \"FizzBuzz\" for both, otherwise the number as a string.",
+      hint:"Check divisibility by both 3 and 5 before checking either one alone.",
+      starter:`def fizzBuzz(n):
+    pass
+
+print(fizzBuzz(5))  # ['1', '2', 'Fizz', '4', 'Buzz']` },
+    { lc:1480, d:"E", title:"Running Sum of 1d Array", text:"Return a list where each position holds the sum of everything up to and including it.",
+      hint:"Keep one running total as you loop, and append it after adding each number.",
+      starter:`def runningSum(nums):
+    pass
+
+print(runningSum([1, 2, 3, 4]))  # [1, 3, 6, 10]` },
+    { lc:12, d:"M", title:"Integer to Roman", text:"Convert an integer from 1 to 3999 into a Roman numeral.",
+      hint:"List the 13 value and symbol pairs from largest to smallest, including 900, 400, 90, 40, 9 and 4. Subtract greedily.",
+      starter:`def intToRoman(num):
+    pass
+
+print(intToRoman(1994))  # MCMXCIV` },
+    { lc:273, d:"H", title:"Integer to English Words", text:"Convert a non-negative integer into its English words.",
+      hint:"Split the number into groups of three digits. Write a helper that names any number below 1000, then attach Thousand, Million, Billion.",
+      starter:`def numberToWords(num):
+    pass
+
+print(numberToWords(12345))  # Twelve Thousand Three Hundred Forty Five` }
+  ]},
+
+{ title:"Arrays and strings", blurb:"Lists, indexing costs, and building strings properly",
+  concept:[
+    "A Python list is a dynamic array. Reading `nums[i]` and `nums.append(x)` are O(1). Inserting or removing at the front (`nums.insert(0, x)`, `nums.pop(0)`) is O(n) because everything shifts. `x in nums` is O(n).",
+    "Strings are immutable. `s += ch` inside a loop creates a new string each time, so collect pieces in a list and finish with `\"\".join(parts)`.",
+    "Slices copy: `nums[1:4]` costs O(k). `nums[::-1]` reverses. `sorted(nums)` returns a new list; `nums.sort()` sorts in place.",
+    "Most array problems become easy once you ask: what single piece of information do I need to carry as I walk left to right?"
+  ],
+  code:`s = "leetcode"
+s[0], s[-1], len(s)        # 'l', 'e', 8
+s[::-1]                    # 'edocteel'
+parts = []
+for ch in s:
+    parts.append(ch.upper())
+"".join(parts)             # 'LEETCODE'
+max(nums), min(nums), sum(nums)`,
+  worked:{ lc:121, title:"Best Time to Buy and Sell Stock",
+    problem:"prices[i] is the price on day i. Buy once and sell later for the biggest profit. Return 0 if no profit is possible.",
+    steps:["Brute force tries every buy and sell pair: O(n²).",
+           "Better: when standing on day i, the best buy day is simply the lowest price seen so far.",
+           "Carry `lowest` as you walk, and update the best profit with `p - lowest`.",
+           "Trace [7,1,5,3,6,4]: lowest becomes 1, best becomes 4, then 5."],
+    code:`def maxProfit(prices):
+    lowest = prices[0]
+    best = 0
+    for p in prices:
+        lowest = min(lowest, p)
+        best = max(best, p - lowest)
+    return best`,
+    cx:"Time O(n), one pass. Space O(1)." },
+  problems:[
+    { lc:14, d:"E", title:"Longest Common Prefix", text:"Return the longest prefix shared by every string in the list, or an empty string.",
+      hint:"Use the first word as the candidate prefix and shorten it until every word starts with it.",
+      starter:`def longestCommonPrefix(strs):
+    pass
+
+print(longestCommonPrefix(["flower", "flow", "flight"]))  # fl` },
+    { lc:238, d:"M", title:"Product of Array Except Self", text:"Return a list where answer[i] is the product of every number except nums[i]. No division, O(n) time.",
+      hint:"answer[i] is the product of everything to its left times the product of everything to its right. Two passes.",
+      starter:`def productExceptSelf(nums):
+    pass
+
+print(productExceptSelf([1, 2, 3, 4]))  # [24, 12, 8, 6]` },
+    { lc:41, d:"H", title:"First Missing Positive", text:"Return the smallest positive integer missing from an unsorted list, in O(n) time and O(1) extra space.",
+      hint:"The answer is between 1 and n + 1. Try to move each value v into index v - 1 by swapping.",
+      starter:`def firstMissingPositive(nums):
+    pass
+
+print(firstMissingPositive([3, 4, -1, 1]))  # 2` }
+  ]},
+
+{ title:"Hash maps and sets", blurb:"Dictionaries and sets for instant lookups",
+  concept:[
+    "A dictionary maps keys to values with O(1) average lookup, insert and delete. A set is the same idea with keys only.",
+    "The classic trade: spend O(n) memory to turn an O(n) search into an O(1) lookup. Whenever you catch yourself writing a loop just to find something, think dictionary or set.",
+    "`counts.get(ch, 0) + 1` counts things. `collections.Counter(s)` does it in one call, and `collections.defaultdict(list)` groups items without checking whether the key exists.",
+    "Keys must be immutable: strings, numbers and tuples work; lists do not."
+  ],
+  code:`counts = {}
+for ch in "hello":
+    counts[ch] = counts.get(ch, 0) + 1   # {'h': 1, 'e': 1, 'l': 2, 'o': 1}
+
+seen = set()
+seen.add(3)
+3 in seen                                # True, O(1)
+
+from collections import Counter, defaultdict
+Counter("hello")["l"]                    # 2
+groups = defaultdict(list)
+groups["a"].append(1)`,
+  worked:{ lc:1, title:"Two Sum",
+    problem:"Return the indexes of the two numbers that add up to target. Exactly one answer exists.",
+    steps:["Brute force checks every pair: O(n²).",
+           "For each number n, the partner we need is `target - n`. The only question is whether we have seen it already.",
+           "Store each number's index in a dictionary as we go, and look up the partner before storing.",
+           "Trace [2,7,11,15], target 9: store 2 at index 0; at 7 we need 2, found at index 0."],
+    code:`def twoSum(nums, target):
+    seen = {}
+    for i, n in enumerate(nums):
+        need = target - n
+        if need in seen:
+            return [seen[need], i]
+        seen[n] = i`,
+    cx:"Time O(n). Space O(n) for the dictionary." },
+  problems:[
+    { lc:242, d:"E", title:"Valid Anagram", text:"Return True if t uses exactly the same letters as s.",
+      hint:"Count the letters in each string and compare the counts.",
+      starter:`def isAnagram(s, t):
+    pass
+
+print(isAnagram("anagram", "nagaram"))  # True` },
+    { lc:128, d:"M", title:"Longest Consecutive Sequence", text:"Return the length of the longest run of consecutive integers in an unsorted list, in O(n) time.",
+      hint:"Put everything in a set. Only start counting from a number whose predecessor is not in the set.",
+      starter:`def longestConsecutive(nums):
+    pass
+
+print(longestConsecutive([100, 4, 200, 1, 3, 2]))  # 4` },
+    { lc:149, d:"H", title:"Max Points on a Line", text:"Given points on a plane, return the largest number of points that lie on one straight line.",
+      hint:"Fix one point, then use a dictionary to count how many other points share each slope with it. Reduce the slope with gcd to avoid float errors.",
+      starter:`def maxPoints(points):
+    pass
+
+print(maxPoints([[1, 1], [3, 2], [5, 3], [4, 1], [2, 3], [1, 4]]))  # 4` }
+  ]},
+
+{ title:"Two pointers", blurb:"Two indexes moving through sorted or mirrored data",
+  concept:[
+    "Two pointers replaces a nested loop with two indexes that move toward each other, or in the same direction, so the total work is O(n).",
+    "It works when moving a pointer safely rules out a whole group of candidates. In a sorted list, if the sum is too small, the left number can never work with anything smaller, so move left forward.",
+    "Typical signs: the input is sorted, you are comparing both ends (palindromes), or you need pairs or triples that satisfy a condition."
+  ],
+  code:`left, right = 0, len(nums) - 1
+while left < right:
+    # look at nums[left] and nums[right]
+    # then move one pointer based on what you saw
+    left += 1      # or: right -= 1`,
+  worked:{ lc:167, title:"Two Sum II (sorted input)",
+    problem:"The list is sorted. Return the 1-based positions of the two numbers that add up to target, using O(1) extra space.",
+    steps:["Start with the smallest and largest numbers.",
+           "If their sum is too small, the only way to grow it is to move left forward.",
+           "If it is too big, move right back.",
+           "Trace [2,7,11,15], target 9: 2 + 15 too big, 2 + 11 too big, 2 + 7 matches."],
+    code:`def twoSum(numbers, target):
+    left, right = 0, len(numbers) - 1
+    while left < right:
+        total = numbers[left] + numbers[right]
+        if total == target:
+            return [left + 1, right + 1]
+        if total < target:
+            left += 1
+        else:
+            right -= 1`,
+    cx:"Time O(n). Space O(1), which beats the dictionary version." },
+  problems:[
+    { lc:125, d:"E", title:"Valid Palindrome", text:"Ignoring case and anything that is not a letter or digit, return True if the string is a palindrome.",
+      hint:"One pointer at each end. Skip characters where `isalnum()` is False, and compare in lowercase.",
+      starter:`def isPalindrome(s):
+    pass
+
+print(isPalindrome("A man, a plan, a canal: Panama"))  # True` },
+    { lc:15, d:"M", title:"3Sum", text:"Return all unique triplets that add up to zero.",
+      hint:"Sort first. Fix one number, then run the two-pointer pair search on the rest. Skip duplicates.",
+      starter:`def threeSum(nums):
+    pass
+
+print(threeSum([-1, 0, 1, 2, -1, -4]))  # [[-1, -1, 2], [-1, 0, 1]]` },
+    { lc:42, d:"H", title:"Trapping Rain Water", text:"Given bar heights, return how much rain water is trapped between them.",
+      hint:"Water above a bar is min(tallest to its left, tallest to its right) minus its height. Always move the pointer on the shorter side.",
+      starter:`def trap(height):
+    pass
+
+print(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))  # 6` }
+  ]},
+
+{ title:"Sliding window", blurb:"A moving range over a list or string",
+  concept:[
+    "A sliding window is a range `[left, right]` that moves across the input. Instead of recomputing each range from scratch, you update the answer as items enter on the right and leave on the left.",
+    "Fixed-size windows: add the new item, remove the old one. Variable-size windows: grow the right edge every step, and shrink the left edge while the window breaks the rule.",
+    "Each item enters once and leaves once, so the work is O(n) even though there is a loop inside a loop.",
+    "Typical signs: the words substring or subarray, plus longest, shortest or at most k."
+  ],
+  code:`left = 0
+for right in range(len(s)):
+    # 1. add s[right] to the window
+    while window_is_invalid:
+        # 2. remove s[left] from the window
+        left += 1
+    # 3. the window is valid: update the answer`,
+  worked:{ lc:3, title:"Longest Substring Without Repeating Characters",
+    problem:"Return the length of the longest substring with no repeated character.",
+    steps:["Keep a set of the characters currently inside the window.",
+           "Move right one step at a time. If the new character is already in the set, shrink from the left until it is not.",
+           "After shrinking, add the character and record the window length.",
+           "Trace abcabcbb: the window grows to abc (3), then keeps sliding at length 3 or less."],
+    code:`def lengthOfLongestSubstring(s):
+    seen = set()
+    left = 0
+    best = 0
+    for right, ch in enumerate(s):
+        while ch in seen:
+            seen.remove(s[left])
+            left += 1
+        seen.add(ch)
+        best = max(best, right - left + 1)
+    return best`,
+    cx:"Time O(n). Space O(k) for the distinct characters in the window." },
+  problems:[
+    { lc:643, d:"E", title:"Maximum Average Subarray I", text:"Return the largest average of any contiguous subarray of length k.",
+      hint:"Sum the first k numbers, then slide: add the number entering, subtract the one leaving.",
+      starter:`def findMaxAverage(nums, k):
+    pass
+
+print(findMaxAverage([1, 12, -5, -6, 50, 3], 4))  # 12.75` },
+    { lc:424, d:"M", title:"Longest Repeating Character Replacement", text:"You may change at most k characters. Return the length of the longest substring of one repeated letter you can make.",
+      hint:"A window is valid when its length minus the count of its most common letter is at most k.",
+      starter:`def characterReplacement(s, k):
+    pass
+
+print(characterReplacement("AABABBA", 1))  # 4` },
+    { lc:76, d:"H", title:"Minimum Window Substring", text:"Return the shortest substring of s that contains every character of t, including duplicates, or an empty string.",
+      hint:"Grow the right edge until the window covers t, then shrink the left edge while it still covers t.",
+      starter:`def minWindow(s, t):
+    pass
+
+print(minWindow("ADOBECODEBANC", "ABC"))  # BANC` }
+  ]},
+
+{ title:"Stacks and queues", blurb:"Last in first out, first in first out",
+  concept:[
+    "A stack is last in, first out. A plain list works: `stack.append(x)` pushes, `stack.pop()` pops, `stack[-1]` peeks. All O(1).",
+    "A queue is first in, first out. Use `collections.deque`: `queue.append(x)` and `queue.popleft()` are O(1). Never use `list.pop(0)`, which is O(n).",
+    "Stacks fit problems about matching pairs, undoing, or finding the next bigger or smaller item. A monotonic stack keeps its items in sorted order and pops whatever the new item beats.",
+    "Queues fit problems that process things in arrival order, which is why BFS uses one."
+  ],
+  code:`stack = []
+stack.append(1)
+stack.append(2)
+stack.pop()        # 2
+stack[-1]          # 1
+
+from collections import deque
+queue = deque()
+queue.append(1)
+queue.append(2)
+queue.popleft()    # 1`,
+  worked:{ lc:20, title:"Valid Parentheses",
+    problem:"Given a string of brackets ()[]{}, return True if every bracket is closed by the right type in the right order.",
+    steps:["The most recently opened bracket must be the first one closed. That is exactly what a stack gives you.",
+           "Push every opening bracket.",
+           "On a closing bracket, pop and check it matches. An empty stack here means there was nothing to close.",
+           "At the end the stack must be empty, otherwise something was left open."],
+    code:`def isValid(s):
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack = []
+    for ch in s:
+        if ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+        else:
+            stack.append(ch)
+    return not stack`,
+    cx:"Time O(n). Space O(n) for the stack." },
+  problems:[
+    { lc:232, d:"E", title:"Implement Queue using Stacks", text:"Build a queue with push, pop, peek and empty, using only stacks (lists with append and pop).",
+      hint:"Use an in stack and an out stack. Only move items across when the out stack is empty.",
+      starter:`class MyQueue:
+    def __init__(self):
+        pass
+
+    def push(self, x):
+        pass
+
+    def pop(self):
+        pass
+
+    def peek(self):
+        pass
+
+    def empty(self):
+        pass
+
+q = MyQueue()
+q.push(1)
+q.push(2)
+print(q.peek())   # 1
+print(q.pop())    # 1
+print(q.empty())  # False` },
+    { lc:739, d:"M", title:"Daily Temperatures", text:"For each day, return how many days you wait until a warmer temperature, or 0 if none comes.",
+      hint:"Keep a stack of indexes still waiting for a warmer day. A warmer temperature resolves the ones on top.",
+      starter:`def dailyTemperatures(temperatures):
+    pass
+
+print(dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]))  # [1, 1, 4, 2, 1, 1, 0, 0]` },
+    { lc:84, d:"H", title:"Largest Rectangle in Histogram", text:"Given bar heights of width 1, return the area of the largest rectangle that fits inside the histogram.",
+      hint:"Keep a stack of bars with increasing heights. When a shorter bar arrives, pop and work out how wide each popped bar could stretch.",
+      starter:`def largestRectangleArea(heights):
+    pass
+
+print(largestRectangleArea([2, 1, 5, 6, 2, 3]))  # 10` }
+  ]},
+
+{ title:"Binary search", blurb:"Halving the search space each step",
+  concept:[
+    "Binary search finds something in sorted data in O(log n) by checking the middle and throwing away the half that cannot contain the answer.",
+    "Keep two bounds, `lo` and `hi`. Each step must shrink the range, otherwise the loop never ends. Use `mid + 1` and `mid - 1` so the middle is excluded.",
+    "It is not only for finding a value. Any yes or no question that flips once along a range (no, no, no, yes, yes) can be binary searched for the flip point.",
+    "Python's `bisect` module has `bisect_left` and `bisect_right` built in, but practise writing it by hand first."
+  ],
+  code:`lo, hi = 0, len(nums) - 1
+while lo <= hi:
+    mid = (lo + hi) // 2
+    if nums[mid] < target:
+        lo = mid + 1       # answer is to the right
+    else:
+        hi = mid - 1       # answer is here or to the left
+# lo is now the first index whose value is >= target`,
+  worked:{ lc:704, title:"Binary Search",
+    problem:"Return the index of target in a sorted list, or -1 if it is missing.",
+    steps:["Start with the whole list as the range.",
+           "Look at the middle. If it is the target, done.",
+           "If the middle is too small, the target can only be to the right, so move lo past mid. Otherwise move hi before mid.",
+           "When lo passes hi the range is empty and the target is not there."],
+    code:`def search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1`,
+    cx:"Time O(log n). Space O(1)." },
+  problems:[
+    { lc:35, d:"E", title:"Search Insert Position", text:"Return the index of target in a sorted list, or the index where it would be inserted.",
+      hint:"Run a standard binary search. When the loop ends, lo is the insert position.",
+      starter:`def searchInsert(nums, target):
+    pass
+
+print(searchInsert([1, 3, 5, 6], 2))  # 1` },
+    { lc:33, d:"M", title:"Search in Rotated Sorted Array", text:"A sorted list was rotated at an unknown point. Return the index of target or -1, in O(log n).",
+      hint:"At every step one half is properly sorted. Check whether the target lies inside that sorted half.",
+      starter:`def search(nums, target):
+    pass
+
+print(search([4, 5, 6, 7, 0, 1, 2], 0))  # 4` },
+    { lc:4, d:"H", title:"Median of Two Sorted Arrays", text:"Return the median of two sorted lists in O(log(m + n)) time.",
+      hint:"Binary search the smaller list for a cut point so that everything left of both cuts is no bigger than everything right of them.",
+      starter:`def findMedianSortedArrays(nums1, nums2):
+    pass
+
+print(findMedianSortedArrays([1, 2], [3, 4]))  # 2.5` }
+  ]},
+
+{ title:"Sorting", blurb:"Built-in sorting, custom keys, and merge sort",
+  concept:[
+    "`sorted(items)` returns a new sorted list and `items.sort()` sorts in place. Both are O(n log n) and stable, meaning equal items keep their original order.",
+    "`key=` controls what to sort by: `sorted(words, key=len)` or `pairs.sort(key=lambda p: p[1])`. Add `reverse=True` for descending order.",
+    "Sorting first is often the unlock. Once data is sorted, neighbours are related, and two pointers, binary search and greedy choices become possible.",
+    "Merge sort is worth knowing by hand: split in half, sort each half, merge the two sorted halves. Its merge step shows up inside many harder problems."
+  ],
+  code:`nums = [5, 2, 9]
+sorted(nums)                           # [2, 5, 9], nums unchanged
+nums.sort(reverse=True)                # nums is now [9, 5, 2]
+
+people = [("Ada", 36), ("Bo", 25)]
+people.sort(key=lambda p: p[1])        # youngest first
+sorted(words, key=lambda w: (len(w), w))   # by length, then alphabetically`,
+  worked:{ lc:56, title:"Merge Intervals",
+    problem:"Given intervals [start, end], merge all that overlap and return the result.",
+    steps:["Unsorted, any interval could overlap any other. Sorted by start, an interval can only overlap the one just before it.",
+           "Sort by start, then walk through keeping a merged list.",
+           "If the current start is inside the last merged interval, extend that interval's end. Otherwise start a new one.",
+           "Trace [[1,3],[2,6],[8,10]]: [1,3] and [2,6] merge into [1,6]; [8,10] starts fresh."],
+    code:`def merge(intervals):
+    intervals.sort(key=lambda pair: pair[0])
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged`,
+    cx:"Time O(n log n) for the sort. Space O(n) for the output." },
+  problems:[
+    { lc:88, d:"E", title:"Merge Sorted Array", text:"nums1 has m real values followed by n zeros. Merge the n values of nums2 into nums1 in place, keeping it sorted.",
+      hint:"Fill nums1 from the back, taking the larger of the two tails each time.",
+      starter:`def merge(nums1, m, nums2, n):
+    pass
+
+a = [1, 2, 3, 0, 0, 0]
+merge(a, 3, [2, 5, 6], 3)
+print(a)  # [1, 2, 2, 3, 5, 6]` },
+    { lc:912, d:"M", title:"Sort an Array", text:"Sort the list in O(n log n) without using sort() or sorted(). Write merge sort yourself.",
+      hint:"Split the list in half, sort each half with a recursive call, then merge the two sorted halves with two pointers.",
+      starter:`def sortArray(nums):
+    pass
+
+print(sortArray([5, 1, 1, 2, 0, 0]))  # [0, 0, 1, 1, 2, 5]` },
+    { lc:315, d:"H", title:"Count of Smaller Numbers After Self", text:"For each number, count how many numbers to its right are smaller.",
+      hint:"Adapt merge sort to sort indexes. While merging, count how many right-half items have already been placed before each left-half item.",
+      starter:`def countSmaller(nums):
+    pass
+
+print(countSmaller([5, 2, 6, 1]))  # [2, 1, 1, 0]` }
+  ]},
+
+{ title:"Linked lists", blurb:"Nodes, pointers, and the dummy-node trick", prelude:LIST_PRELUDE,
+  concept:[
+    "A linked list is a chain of nodes. Each node holds a value and a `next` pointer to the following node. The last node points to `None`.",
+    "There is no indexing. To reach the fifth node you walk four steps. Inserting or removing is O(1) once you are standing at the right node, because you only rewire pointers.",
+    "Three tricks solve most problems. A dummy node in front of the head removes special cases. Fast and slow pointers find the middle or a cycle. And before you change a `next` pointer, save where it pointed.",
+    "In the practice boxes, `build([1, 2, 3])` makes a list and `to_list(head)` turns one back into a Python list so you can print it."
+  ],
+  code:`class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+node = head
+while node:            # walk the whole list
+    print(node.val)
+    node = node.next`,
+  worked:{ lc:206, title:"Reverse Linked List",
+    problem:"Reverse a singly linked list and return the new head.",
+    steps:["Walk the list once, flipping each node's next pointer to point backwards.",
+           "Keep `prev`, the already reversed part, starting as None.",
+           "For each node: save its next, point it at prev, then step prev and node forward.",
+           "When node runs off the end, prev is the new head."],
+    code:`def reverseList(head):
+    prev = None
+    node = head
+    while node:
+        nxt = node.next
+        node.next = prev
+        prev = node
+        node = nxt
+    return prev`,
+    cx:"Time O(n). Space O(1)." },
+  problems:[
+    { lc:21, d:"E", title:"Merge Two Sorted Lists", text:"Merge two sorted linked lists into one sorted list and return its head.",
+      hint:"Use a dummy head node and always attach the smaller of the two current nodes.",
+      starter:`def mergeTwoLists(list1, list2):
+    pass
+
+print(to_list(mergeTwoLists(build([1, 2, 4]), build([1, 3, 4]))))  # [1, 1, 2, 3, 4, 4]` },
+    { lc:19, d:"M", title:"Remove Nth Node From End of List", text:"Remove the nth node counting from the end, in one pass, and return the head.",
+      hint:"Move a fast pointer n steps ahead, then move both until fast reaches the end. A dummy node handles removing the head.",
+      starter:`def removeNthFromEnd(head, n):
+    pass
+
+print(to_list(removeNthFromEnd(build([1, 2, 3, 4, 5]), 2)))  # [1, 2, 3, 5]` },
+    { lc:25, d:"H", title:"Reverse Nodes in k-Group", text:"Reverse the nodes k at a time. Leave a final group of fewer than k nodes as it is.",
+      hint:"First check that k nodes exist. Reverse that group, connect it to the tail of the previous group, and repeat.",
+      starter:`def reverseKGroup(head, k):
+    pass
+
+print(to_list(reverseKGroup(build([1, 2, 3, 4, 5]), 2)))  # [2, 1, 4, 3, 5]` }
+  ]},
+
+{ title:"Recursion and backtracking", blurb:"Functions that call themselves, and trying every choice",
+  concept:[
+    "A recursive function solves a problem by calling itself on a smaller version. It needs a base case that stops, and a step that moves toward the base case.",
+    "Trust the call: assume the function already works for smaller inputs, and only write how to combine those answers.",
+    "Backtracking is recursion that builds an answer one choice at a time: choose, explore, then undo the choice so the next option starts clean.",
+    "Costs are high by nature: subsets are O(2ⁿ), permutations O(n!). The recursion depth also uses stack space, O(depth)."
+  ],
+  code:`def explore(path):
+    if is_complete(path):
+        results.append(path[:])     # save a copy
+        return
+    for choice in options:
+        path.append(choice)         # choose
+        explore(path)               # explore
+        path.pop()                  # undo`,
+  worked:{ lc:78, title:"Subsets",
+    problem:"Return every possible subset of a list of distinct numbers.",
+    steps:["Each number has two options: in the subset, or out. That is a decision tree with 2ⁿ leaves.",
+           "`explore(i)` decides about nums[i] and then recurses on i + 1.",
+           "When i reaches the end, the current path is one complete subset. Save a copy, because path keeps changing.",
+           "After exploring with the number included, pop it and explore again without it."],
+    code:`def subsets(nums):
+    result = []
+    path = []
+
+    def explore(i):
+        if i == len(nums):
+            result.append(path[:])
+            return
+        path.append(nums[i])
+        explore(i + 1)
+        path.pop()
+        explore(i + 1)
+
+    explore(0)
+    return result`,
+    cx:"Time O(n · 2ⁿ). Space O(n) for the recursion, not counting the output." },
+  problems:[
+    { lc:509, d:"E", title:"Fibonacci Number", text:"Return the nth Fibonacci number, where F(0) = 0 and F(1) = 1. Write it recursively, then make it fast.",
+      hint:"Base cases are n = 0 and n = 1. Store answers you have already computed in a dictionary so nothing is computed twice.",
+      starter:`def fib(n):
+    pass
+
+print(fib(10))  # 55` },
+    { lc:46, d:"M", title:"Permutations", text:"Return every ordering of a list of distinct numbers.",
+      hint:"Build a path. At each step try every number not already in the path, recurse, then remove it.",
+      starter:`def permute(nums):
+    pass
+
+print(permute([1, 2, 3]))  # 6 orderings, starting [1, 2, 3], [1, 3, 2], ...` },
+    { lc:51, d:"H", title:"N-Queens", text:"Place n queens on an n by n board so none attack each other. Return every solution as a list of row strings using Q and a dot.",
+      hint:"Place one queen per row. Track used columns and both diagonals (r - c and r + c) in sets.",
+      starter:`def solveNQueens(n):
+    pass
+
+print(solveNQueens(4))  # 2 solutions: ['.Q..', '...Q', 'Q...', '..Q.'] and its mirror` }
+  ]},
+
+{ title:"Trees: DFS and BFS", blurb:"Binary trees, depth-first and level-by-level", prelude:TREE_PRELUDE,
+  concept:[
+    "A binary tree node has a value, a `left` child and a `right` child. The top node is the root; a node with no children is a leaf.",
+    "Depth-first search goes all the way down one branch before backing up, and is usually written with recursion: handle the empty case, then combine the answers from the left and right subtrees.",
+    "Breadth-first search visits level by level using a deque: pop a node, process it, push its children.",
+    "In a binary search tree, everything in the left subtree is smaller than the node and everything in the right is larger, so an in-order walk (left, node, right) gives sorted order.",
+    "In the practice boxes, `tree([3, 9, 20, None, None, 15, 7])` builds a tree from LeetCode's level-order format and `flat(root)` lists its values level by level."
+  ],
+  code:`def dfs(node):
+    if not node:
+        return
+    dfs(node.left)
+    dfs(node.right)
+
+from collections import deque
+queue = deque([root])
+while queue:
+    node = queue.popleft()
+    if node.left:
+        queue.append(node.left)
+    if node.right:
+        queue.append(node.right)`,
+  worked:{ lc:104, title:"Maximum Depth of Binary Tree",
+    problem:"Return the number of nodes on the longest path from the root down to a leaf.",
+    steps:["Base case: an empty tree has depth 0.",
+           "Trust the call: assume maxDepth already gives the right depth for each subtree.",
+           "The depth of this tree is 1 for the root plus the deeper of the two subtrees."],
+    code:`def maxDepth(root):
+    if not root:
+        return 0
+    return 1 + max(maxDepth(root.left), maxDepth(root.right))`,
+    cx:"Time O(n), every node once. Space O(h) for the recursion, where h is the height." },
+  problems:[
+    { lc:226, d:"E", title:"Invert Binary Tree", text:"Mirror the tree: swap every node's left and right children. Return the root.",
+      hint:"Swap the two children, then do the same for both subtrees.",
+      starter:`def invertTree(root):
+    pass
+
+print(flat(invertTree(tree([4, 2, 7, 1, 3, 6, 9]))))  # [4, 7, 2, 9, 6, 3, 1]` },
+    { lc:102, d:"M", title:"Binary Tree Level Order Traversal", text:"Return the node values level by level, as a list of lists.",
+      hint:"BFS with a deque. Process the queue one level at a time using its current length.",
+      starter:`def levelOrder(root):
+    pass
+
+print(levelOrder(tree([3, 9, 20, None, None, 15, 7])))  # [[3], [9, 20], [15, 7]]` },
+    { lc:124, d:"H", title:"Binary Tree Maximum Path Sum", text:"A path connects nodes through parent-child links and need not pass through the root. Return the largest sum of any path.",
+      hint:"For each node, compute the best downward path, ignoring negatives. The best path through that node is left + right + its value.",
+      starter:`def maxPathSum(root):
+    pass
+
+print(maxPathSum(tree([-10, 9, 20, None, None, 15, 7])))  # 42` }
+  ]},
+
+{ title:"Heaps", blurb:"Always knowing the smallest or largest item",
+  concept:[
+    "A heap keeps the smallest item instantly available. Pushing and popping cost O(log n); peeking at the smallest is O(1).",
+    "Python's `heapq` turns a normal list into a min-heap. `heap[0]` is always the smallest item.",
+    "There is no max-heap, so push negated values (`-x`) and negate again when you pop.",
+    "Reach for a heap when you repeatedly need the current smallest or largest, or the top k of something. A heap of size k gives O(n log k), better than sorting everything."
+  ],
+  code:`import heapq
+
+heap = []
+heapq.heappush(heap, 5)
+heapq.heappush(heap, 1)
+heap[0]                    # 1, the smallest
+heapq.heappop(heap)        # 1
+
+nums = [3, 1, 4]
+heapq.heapify(nums)        # O(n), in place
+heapq.heappush(heap, (priority, item))   # tuples sort by first field`,
+  worked:{ lc:215, title:"Kth Largest Element in an Array",
+    problem:"Return the kth largest number in an unsorted list.",
+    steps:["Sorting works in O(n log n), but we only care about the top k.",
+           "Keep a min-heap holding the k largest numbers seen so far.",
+           "Push each number. If the heap grows past k, pop the smallest, which cannot be in the top k.",
+           "At the end the smallest item in the heap is the kth largest overall."],
+    code:`import heapq
+
+def findKthLargest(nums, k):
+    heap = []
+    for n in nums:
+        heapq.heappush(heap, n)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap[0]`,
+    cx:"Time O(n log k). Space O(k)." },
+  problems:[
+    { lc:1046, d:"E", title:"Last Stone Weight", text:"Repeatedly smash the two heaviest stones. Equal stones vanish; otherwise the difference goes back. Return the last stone's weight, or 0.",
+      hint:"heapq is a min-heap, so store negative weights to pop the heaviest first.",
+      starter:`def lastStoneWeight(stones):
+    pass
+
+print(lastStoneWeight([2, 7, 4, 1, 8, 1]))  # 1` },
+    { lc:347, d:"M", title:"Top K Frequent Elements", text:"Return the k most frequent numbers, in any order.",
+      hint:"Count with a dictionary, then keep a heap of size k ordered by count.",
+      starter:`def topKFrequent(nums, k):
+    pass
+
+print(topKFrequent([1, 1, 1, 2, 2, 3], 2))  # [1, 2] in any order` },
+    { lc:295, d:"H", title:"Find Median from Data Stream", text:"Build a class that accepts numbers one at a time and can return the median of everything so far.",
+      hint:"Use two heaps: a max-heap for the smaller half and a min-heap for the larger half. Keep their sizes within one of each other.",
+      starter:`class MedianFinder:
+    def __init__(self):
+        pass
+
+    def addNum(self, num):
+        pass
+
+    def findMedian(self):
+        pass
+
+m = MedianFinder()
+m.addNum(1)
+m.addNum(2)
+print(m.findMedian())  # 1.5
+m.addNum(3)
+print(m.findMedian())  # 2` }
+  ]},
+
+{ title:"Graphs", blurb:"Nodes, edges, and exploring with BFS and DFS",
+  concept:[
+    "A graph is a set of nodes connected by edges. Store it as an adjacency list: a dictionary mapping each node to a list of its neighbours.",
+    "Graphs can have cycles, so always keep a `visited` set. Without it you loop forever.",
+    "DFS explores as far as possible along one path. BFS explores in rings, so it finds the shortest path in an unweighted graph.",
+    "A grid is a graph in disguise: each cell is a node and its up, down, left and right cells are neighbours.",
+    "Building the graph is O(V + E), and so is a full BFS or DFS."
+  ],
+  code:`from collections import defaultdict, deque
+
+graph = defaultdict(list)
+for a, b in edges:
+    graph[a].append(b)
+    graph[b].append(a)
+
+visited = {start}
+queue = deque([start])
+while queue:
+    node = queue.popleft()
+    for nxt in graph[node]:
+        if nxt not in visited:
+            visited.add(nxt)
+            queue.append(nxt)`,
+  worked:{ lc:200, title:"Number of Islands",
+    problem:"The grid holds \"1\" for land and \"0\" for water. Count the islands, where land cells connect up, down, left and right.",
+    steps:["Scan every cell. Each time you find land you have not visited, that is a new island.",
+           "From that cell, run a DFS that marks every connected land cell as seen.",
+           "The DFS stops at the grid edge, at water, and at cells already seen.",
+           "The number of times you start a DFS is the number of islands."],
+    code:`def numIslands(grid):
+    rows, cols = len(grid), len(grid[0])
+    seen = set()
+
+    def sink(r, c):
+        if r < 0 or c < 0 or r >= rows or c >= cols:
+            return
+        if grid[r][c] == "0" or (r, c) in seen:
+            return
+        seen.add((r, c))
+        sink(r + 1, c)
+        sink(r - 1, c)
+        sink(r, c + 1)
+        sink(r, c - 1)
+
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1" and (r, c) not in seen:
+                count += 1
+                sink(r, c)
+    return count`,
+    cx:"Time O(rows × cols), each cell visited once. Space O(rows × cols) for the seen set." },
+  problems:[
+    { lc:733, d:"E", title:"Flood Fill", text:"Starting at cell (sr, sc), recolour it and every connected cell of the same original colour. Return the image.",
+      hint:"DFS or BFS from the start cell. Stop straight away if the new colour equals the old one.",
+      starter:`def floodFill(image, sr, sc, color):
+    pass
+
+print(floodFill([[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2))  # [[2, 2, 2], [2, 2, 0], [2, 0, 1]]` },
+    { lc:207, d:"M", title:"Course Schedule", text:"Each pair [a, b] means you must take course b before a. Return True if you can finish all courses.",
+      hint:"This is cycle detection in a directed graph. Track the nodes on the current DFS path, or count incoming edges and use BFS.",
+      starter:`def canFinish(numCourses, prerequisites):
+    pass
+
+print(canFinish(2, [[1, 0]]))          # True
+print(canFinish(2, [[1, 0], [0, 1]]))  # False` },
+    { lc:127, d:"H", title:"Word Ladder", text:"Change beginWord into endWord one letter at a time, using only words in the list. Return the number of words in the shortest sequence, or 0.",
+      hint:"BFS where each word is a node. Find neighbours quickly by grouping words under patterns such as h*t.",
+      starter:`def ladderLength(beginWord, endWord, wordList):
+    pass
+
+print(ladderLength("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]))  # 5` }
+  ]},
+
+{ title:"Greedy", blurb:"Taking the best local choice at every step",
+  concept:[
+    "A greedy algorithm makes the best-looking choice right now and never goes back. When it works it is short and fast.",
+    "It only works when a local best choice can never hurt the final answer. The hard part is convincing yourself of that, usually with an argument like: swapping any other choice for the greedy one never makes things worse.",
+    "Greedy solutions often start by sorting, then make one pass.",
+    "If you find a counterexample where greedy fails, the problem probably needs dynamic programming instead."
+  ],
+  code:`items.sort()                 # greedy often starts with a sort
+best = 0
+for item in items:
+    if can_take(item):       # take it if it is safe
+        best += 1`,
+  worked:{ lc:55, title:"Jump Game",
+    problem:"nums[i] is the furthest you can jump from index i. Starting at index 0, return True if you can reach the last index.",
+    steps:["You do not need the actual route, only how far you could possibly get.",
+           "Carry `reach`, the furthest index reachable so far.",
+           "If you arrive at an index beyond reach, you are stuck: return False.",
+           "Otherwise extend reach with `i + jump`. Trace [3,2,1,0,4]: reach stays 3, and index 4 is beyond it."],
+    code:`def canJump(nums):
+    reach = 0
+    for i, jump in enumerate(nums):
+        if i > reach:
+            return False
+        reach = max(reach, i + jump)
+    return True`,
+    cx:"Time O(n). Space O(1)." },
+  problems:[
+    { lc:455, d:"E", title:"Assign Cookies", text:"Child i needs a cookie of at least size g[i]. Each child gets at most one cookie. Return the most children you can satisfy.",
+      hint:"Sort both lists. Give the smallest cookie that works to the least demanding child.",
+      starter:`def findContentChildren(g, s):
+    pass
+
+print(findContentChildren([1, 2, 3], [1, 1]))  # 1` },
+    { lc:134, d:"M", title:"Gas Station", text:"Stations sit in a circle. gas[i] is fuel gained at station i and cost[i] is fuel to reach the next. Return the start index that completes the loop, or -1.",
+      hint:"If total gas is less than total cost there is no answer. Otherwise, whenever the tank goes negative, restart from the next station.",
+      starter:`def canCompleteCircuit(gas, cost):
+    pass
+
+print(canCompleteCircuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))  # 3` },
+    { lc:135, d:"H", title:"Candy", text:"Every child gets at least one candy, and a child with a higher rating than a neighbour gets more than that neighbour. Return the fewest candies needed.",
+      hint:"Two passes: left to right for rising ratings, then right to left for the other side. Keep the larger value at each child.",
+      starter:`def candy(ratings):
+    pass
+
+print(candy([1, 0, 2]))  # 5` }
+  ]},
+
+{ title:"Dynamic programming", blurb:"Solving big problems from stored smaller answers",
+  concept:[
+    "Dynamic programming is recursion that remembers. When the same subproblem appears again and again, compute it once and store it.",
+    "The recipe: define the state (what does `dp[i]` mean, in plain words?), write the recurrence (how does `dp[i]` come from smaller states?), set the base cases, then choose the order to fill them in.",
+    "Top-down is a recursive function with a cache (`@functools.cache`). Bottom-up fills a list from the base cases upward. Both give the same complexity.",
+    "The time is usually the number of states times the work per state. If `dp[i]` only needs the last one or two values, keep just those variables and drop the list."
+  ],
+  code:`from functools import cache
+
+@cache
+def ways(n):                # top-down
+    if n <= 1:
+        return 1
+    return ways(n - 1) + ways(n - 2)
+
+dp = [0] * (n + 1)          # bottom-up
+dp[0] = dp[1] = 1
+for i in range(2, n + 1):
+    dp[i] = dp[i - 1] + dp[i - 2]`,
+  worked:{ lc:70, title:"Climbing Stairs",
+    problem:"You climb 1 or 2 steps at a time. Return how many distinct ways there are to reach step n.",
+    steps:["State: ways(i) is the number of ways to reach step i.",
+           "Recurrence: the last move was 1 step from i - 1 or 2 steps from i - 2, so ways(i) = ways(i - 1) + ways(i - 2).",
+           "Base cases: there is 1 way to be at step 0 and 1 way to reach step 1.",
+           "Only the last two values are ever needed, so two variables replace the whole list."],
+    code:`def climbStairs(n):
+    a, b = 1, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b`,
+    cx:"Time O(n). Space O(1)." },
+  problems:[
+    { lc:746, d:"E", title:"Min Cost Climbing Stairs", text:"cost[i] is the price of stepping on stair i, after which you climb 1 or 2 stairs. Start at stair 0 or 1. Return the cheapest way past the top.",
+      hint:"The cheapest way to arrive at stair i is the cheaper of arriving at the two stairs below it, each plus its own cost.",
+      starter:`def minCostClimbingStairs(cost):
+    pass
+
+print(minCostClimbingStairs([10, 15, 20]))  # 15` },
+    { lc:322, d:"M", title:"Coin Change", text:"Return the fewest coins needed to make the amount, or -1 if it cannot be made. You have unlimited coins of each value.",
+      hint:"Let dp[a] be the fewest coins that make amount a. Then dp[a] is 1 plus the smallest dp[a - coin].",
+      starter:`def coinChange(coins, amount):
+    pass
+
+print(coinChange([1, 2, 5], 11))  # 3` },
+    { lc:1235, d:"H", title:"Maximum Profit in Job Scheduling", text:"Each job has a start time, end time and profit. Return the highest total profit from jobs that do not overlap.",
+      hint:"Sort jobs by end time. For each job, either skip it, or take it plus the best total among jobs that end before it starts (binary search for that).",
+      starter:`def jobScheduling(startTime, endTime, profit):
+    pass
+
+print(jobScheduling([1, 2, 3, 3], [3, 4, 5, 6], [50, 10, 40, 70]))  # 120` }
+  ]}
+];
+</script>
+
+<script>
+const BASICS = [
+{ title:"Getting started", blurb:"What Python is, print, comments, and Python as a calculator", src:["readme.md"],
+  concept:[
+    "Python is a way of giving a computer instructions in plain, readable lines. It runs them top to bottom, one line at a time.",
+    "`print()` shows something on the screen. Think of it as the computer saying something out loud: `print(\"Hello\")` says Hello.",
+    "A line that starts with `#` is a comment. Python skips it, so it is a note for you, or for whoever reads your code later.",
+    "Python is also a calculator. `+ - * /` work as you would expect, `**` means \"to the power of\" (`2 ** 3` is 8), and brackets are worked out first, just like in maths."
+  ],
+  code:`# My first program
+print("Hello, world")
+print(2 + 3)        # 5
+print(10 / 4)       # 2.5
+print(2 ** 3)       # 8
+print((2 + 3) * 4)  # 20, brackets first`,
+  problems:[
+    { d:"E", title:"Say hello", text:"Print your name on one line and your city on the next.",
+      hint:"Use two print() lines, each with your text inside quotes.",
+      starter:`# Print your name, then your city
+` },
+    { d:"M", title:"Order of operations", text:"Print the result of 3 + 4 * 2, then the result of (3 + 4) * 2. Add a comment explaining why they are different.",
+      hint:"Multiplication happens before addition unless brackets say otherwise.",
+      starter:`# Print both results here
+` }
+  ]},
+
+{ title:"Variables and built-in functions", blurb:"Named boxes for values, types, and the tools Python gives you for free", src:["02_Day_Variables_builtin_functions/02_variables_builtin_functions.md"],
+  concept:[
+    "A variable is a labelled box that holds a value. `age = 25` puts 25 into a box labelled age. Later you can look inside with `print(age)`, or put something new in with `age = 26`.",
+    "Everyday example: a contact in your phone. The name is the label and the phone number is what is stored. If someone changes their number, you update what is stored and the label stays the same.",
+    "Names can use letters, digits and underscores, cannot start with a digit, and are case-sensitive, so `age` and `Age` are two different boxes. Python style is snake_case: `first_name`, `total_price`.",
+    "Every value has a type: `int` for whole numbers, `float` for decimals, `str` for text, and `bool` for True or False. `type(x)` tells you which one you have.",
+    "Built-in functions come ready to use: `len()` counts, `int()`, `float()` and `str()` convert between types, `round()` rounds, and `min()` and `max()` pick the smallest and largest."
+  ],
+  code:`first_name = "Ada"
+age = 36
+height = 1.65
+is_student = False
+
+print(type(age))            # <class 'int'>
+print(len(first_name))      # 3
+print(int("25") + 5)        # 30: the text "25" became a number
+print(str(age) + " years")  # 36 years
+print(round(3.14159, 2))    # 3.14`,
+  problems:[
+    { d:"E", title:"Full name", text:"Store a first name and a last name in two variables. Join them with a space into full_name, then print full_name and how many characters it has.",
+      hint:"You can join text with +, for example first + \" \" + last. len() counts the characters.",
+      starter:`first_name = "Ada"
+last_name = "Lovelace"
+# make full_name and print it, then print its length
+` },
+    { d:"M", title:"Fix the type", text:"The price arrived as text. Print the total cost of buying 3, which should be 13.5.",
+      hint:"Text cannot be multiplied like a number. Convert it first with float().",
+      starter:`price = "4.50"
+quantity = 3
+# print the total cost
+` }
+  ]},
+
+{ title:"Operators", blurb:"Maths, comparisons, and combining True and False", src:["03_Day_Operators/03_operators.md"],
+  concept:[
+    "Beyond `+ - * /`, two operators matter a lot: `//` divides and drops the remainder, and `%` gives only the remainder.",
+    "Everyday example: four friends split a £47 bill. `47 / 4` is 11.75 each. `47 // 4` is 11 whole pounds each. `47 % 4` is the 3 pounds left over.",
+    "Comparisons ask a question and answer True or False: `==` equal, `!=` not equal, `<`, `>`, `<=`, `>=`. One `=` stores a value; two `==` asks whether two values match.",
+    "`and`, `or` and `not` combine answers. You go for a run if it is dry and you are free: `is_dry and is_free`. That is only True when both are True.",
+    "Shortcuts update a box in place: `score += 10` means `score = score + 10`. The same works with `-=`, `*=` and `/=`."
+  ],
+  code:`print(47 / 4)    # 11.75
+print(47 // 4)   # 11
+print(47 % 4)    # 3
+
+print(5 == 5)    # True
+print(5 != 5)    # False
+print(3 < 2)     # False
+
+is_dry = True
+is_free = False
+print(is_dry and is_free)   # False
+print(is_dry or is_free)    # True
+print(not is_dry)           # False
+
+score = 0
+score += 10
+print(score)     # 10`,
+  problems:[
+    { d:"E", title:"Rectangle", text:"A rectangle is 8 wide and 5 high. Print its area (40) and its perimeter (26).",
+      hint:"Area is width times height. Perimeter is 2 times (width plus height).",
+      starter:`width = 8
+height = 5
+# print the area, then the perimeter
+` },
+    { d:"M", title:"Minutes to hours", text:"Turn 135 minutes into hours and minutes, and print: 2 hours 15 minutes.",
+      hint:"// 60 gives the whole hours. % 60 gives the minutes left over.",
+      starter:`minutes = 135
+# print "2 hours 15 minutes"
+` }
+  ]},
+
+{ title:"Strings", blurb:"Working with text: joining, slicing, and string methods", src:["04_Day_Strings/04_strings.md"],
+  concept:[
+    "A string is text inside quotes. Picture a row of letter tiles, each with a position number that starts at 0. In `\"Python\"`, `s[0]` is P and `s[-1]` is n, the last tile.",
+    "Slicing takes a run of tiles: `s[0:3]` is Pyt. The start is included and the end is not. `s[::-1]` reverses the whole string.",
+    "f-strings drop values straight into text: `f\"Hi {name}, you are {age}\"`. This is the neatest way to build a sentence.",
+    "Methods are actions a string can do: `upper()`, `lower()`, `title()`, `strip()` removes spaces at the ends, `replace(a, b)`, `split()` breaks it into words, `count(x)` and `find(x)`.",
+    "Strings cannot be changed in place. Every method gives you back a new string, so save it: `name = name.upper()`."
+  ],
+  code:`s = "Python"
+print(s[0], s[-1])      # P n
+print(s[0:3])           # Pyt
+print(s[::-1])          # nohtyP
+
+name = "ada lovelace"
+print(name.title())     # Ada Lovelace
+print(name.split())     # ['ada', 'lovelace']
+print(name.replace("ada", "Ada"))
+
+age = 36
+print(f"{name.title()} is {age}")   # Ada Lovelace is 36`,
+  problems:[
+    { d:"E", title:"Initials", text:"Turn \"Ada Lovelace\" into the initials A.L. and print them.",
+      hint:"split() gives you the two words. Take the first letter of each with [0].",
+      starter:`full_name = "Ada Lovelace"
+# print "A.L."
+` },
+    { d:"M", title:"Word count", text:"Print how many words are in the sentence, and print its longest word.",
+      hint:"split() gives a list of words. len() counts them, and max(words, key=len) finds the longest.",
+      starter:`sentence = "I am learning Python to solve problems confidently"
+# print the number of words, then the longest word
+` }
+  ]},
+
+{ title:"Lists", blurb:"Ordered collections you can change", src:["05_Day_Lists/05_lists.md"],
+  concept:[
+    "A list holds many values in order, inside square brackets: `fruits = [\"apple\", \"banana\"]`. Like a shopping list, you can add, cross off and reorder items.",
+    "Positions work like strings: `fruits[0]` is the first item, `fruits[-1]` the last, and `fruits[1:3]` a slice.",
+    "Changing a list: `append(x)` adds to the end, `insert(i, x)` adds at position i, `remove(x)` deletes the first x, and `pop()` removes and gives back the last item.",
+    "Useful tools: `len()`, `x in fruits` to check membership, `sort()` to sort in place, `sorted()` for a sorted copy, and `sum()`, `min()` and `max()` for numbers.",
+    "Watch out: `b = a` does not copy a list. Both names point at the same list, so changing one changes the other. Use `b = a.copy()` for a real copy."
+  ],
+  code:`fruits = ["apple", "banana", "orange"]
+fruits.append("mango")       # add to the end
+fruits.insert(0, "kiwi")     # add at the front
+fruits.remove("banana")
+print(fruits)                # ['kiwi', 'apple', 'orange', 'mango']
+print(len(fruits), "apple" in fruits)   # 4 True
+
+nums = [5, 2, 9, 1]
+nums.sort()
+print(nums, sum(nums), max(nums))       # [1, 2, 5, 9] 17 9`,
+  problems:[
+    { d:"E", title:"Fruit bowl", text:"Start with the list below. Add \"mango\" to the end, add \"kiwi\" to the front, remove \"banana\", then print the list.",
+      hint:"Use append, insert(0, ...) and remove, in that order.",
+      starter:`fruits = ["apple", "banana", "orange"]
+# change the list, then print it
+` },
+    { d:"M", title:"Age statistics", text:"Print the youngest age, the oldest age, the average age, and the median (the middle value once sorted; with an even count, the average of the two middle values). The median here is 24.",
+      hint:"Sort first. With 10 items, the middle two sit at positions 4 and 5.",
+      starter:`ages = [19, 22, 19, 24, 20, 25, 26, 24, 25, 24]
+# print min, max, average, median
+` }
+  ]},
+
+{ title:"Tuples", blurb:"Fixed collections, and unpacking values into names", src:["06_Day_Tuples/06_tuples.md"],
+  concept:[
+    "A tuple is like a list that cannot change once made, written with round brackets: `point = (3, 4)`.",
+    "Everyday example: your date of birth, `(2001, 5, 14)`. It is a fixed record, so nobody should be able to append to it by accident.",
+    "Unpacking pulls a tuple apart into names in one line: `name, age = (\"Ada\", 36)`.",
+    "Unpacking makes swapping easy: `a, b = b, a` swaps two values without a temporary box.",
+    "Tuples can be joined with `+`, counted with `len()`, and checked with `in`. Because they never change, they can be dictionary keys, which lists cannot."
+  ],
+  code:`birthday = (2001, 5, 14)
+print(birthday[0])        # 2001
+
+person = ("Ada", 36, "London")
+name, age, city = person
+print(name, city)         # Ada London
+
+a, b = 1, 2
+a, b = b, a
+print(a, b)               # 2 1
+
+print(len(person), "Ada" in person)   # 3 True`,
+  problems:[
+    { d:"E", title:"Unpack a person", text:"Unpack the tuple into three variables and print: Ada is 36 and lives in London.",
+      hint:"name, age, city = person, then use an f-string.",
+      starter:`person = ("Ada", 36, "London")
+# unpack it, then print the sentence
+` },
+    { d:"M", title:"Family", text:"Join the two tuples into one called family. Print how many people are in it, and whether \"Mum\" is one of them.",
+      hint:"Tuples join with +. Use len() and the in keyword.",
+      starter:`siblings = ("Tunde", "Kemi")
+parents = ("Mum", "Dad")
+# make family, print its size and whether "Mum" is in it
+` }
+  ]},
+
+{ title:"Sets", blurb:"Collections of unique items, and comparing groups", src:["07_Day_Sets/07_sets.md"],
+  concept:[
+    "A set holds each value only once and has no order: `{\"python\", \"sql\"}`. Think of a guest list: writing the same name twice still means one guest.",
+    "`set(my_list)` is the quickest way to remove duplicates from a list.",
+    "`add(x)` and `remove(x)` change a set. Checking `x in my_set` is very fast, even for huge sets, which is why sets appear in so many LeetCode solutions.",
+    "Sets compare groups: `a | b` is everything in either, `a & b` is what both share, and `a - b` is what only a has."
+  ],
+  code:`nums = [1, 2, 2, 3, 3, 3]
+unique = set(nums)
+print(unique, len(unique))   # {1, 2, 3} 3
+
+guests = {"Ada", "Bo"}
+guests.add("Ada")            # already there, nothing changes
+print(len(guests))           # 2
+
+a = {"python", "sql"}
+b = {"python", "java"}
+print(a & b)                 # {'python'}
+print(a | b)                 # all three
+print(a - b)                 # {'sql'}`,
+  problems:[
+    { d:"E", title:"Count unique", text:"Print how many different numbers are in the list (the answer is 4).",
+      hint:"Turn the list into a set, then use len().",
+      starter:`nums = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+# print the number of unique values
+` },
+    { d:"M", title:"Shared skills", text:"Print the skills both people have, all the skills between them, and the skills only you have.",
+      hint:"Use &, | and - between the two sets.",
+      starter:`you = {"python", "sql", "excel"}
+friend = {"python", "java", "sql"}
+# print shared, all, only yours
+` }
+  ]},
+
+{ title:"Dictionaries", blurb:"Looking things up by name with key and value pairs", src:["08_Day_Dictionaries/08_dictionaries.md"],
+  concept:[
+    "A dictionary stores pairs: a key and its value. A real dictionary works the same way: you look up a word (the key) to find its meaning (the value).",
+    "Create one with curly brackets: `phone = {\"Ada\": \"0712\", \"Bo\": \"0788\"}`. Read a value with `phone[\"Ada\"]`.",
+    "`phone[\"Cy\"] = \"0799\"` adds a new pair or changes an existing one. `del phone[\"Bo\"]` removes one.",
+    "`phone[\"Zed\"]` crashes if the key is missing. `phone.get(\"Zed\", \"unknown\")` gives back a default instead.",
+    "`keys()`, `values()` and `items()` give you the keys, the values, or both together. `\"Ada\" in phone` checks the keys."
+  ],
+  code:`phone = {"Ada": "0712", "Bo": "0788"}
+print(phone["Ada"])               # 0712
+phone["Cy"] = "0799"              # add
+phone["Bo"] = "0700"              # change
+del phone["Ada"]                  # remove
+print(phone)                      # {'Bo': '0700', 'Cy': '0799'}
+print(phone.get("Zed", "unknown"))  # unknown
+print(list(phone.keys()))         # ['Bo', 'Cy']
+print("Cy" in phone)              # True`,
+  problems:[
+    { d:"E", title:"About me", text:"Make a dictionary with your name, city and a list of skills. Print its keys, then how many skills are in the list.",
+      hint:"A value can be a list: \"skills\": [\"python\", \"sql\"]. Then use len(me[\"skills\"]).",
+      starter:`me = {
+    # add name, city and skills here
+}
+` },
+    { d:"M", title:"Update the contacts", text:"Add Dami with number 0755, change Bo's number to 0700, delete Ada, then print the dictionary and what .get gives for someone missing.",
+      hint:"Use contacts[key] = value to add or change, del to delete, and get(key, default) to look up safely.",
+      starter:`contacts = {"Ada": "0712", "Bo": "0788"}
+# make the changes, then print
+` }
+  ]},
+
+{ title:"Conditionals", blurb:"Making decisions with if, elif and else", src:["09_Day_Conditionals/09_conditionals.md"],
+  concept:[
+    "`if` runs a block of code only when a condition is True. Everyday example: if it is raining, take an umbrella.",
+    "`elif` (else if) checks another condition when the first was False, and `else` catches everything left. Python checks them top to bottom and runs only the first match.",
+    "Indentation matters. The four spaces under `if` show which lines belong to it.",
+    "Combine conditions with `and` and `or`, and for a short choice use one line: `label = \"adult\" if age >= 18 else \"minor\"`."
+  ],
+  code:`raining = True
+if raining:
+    print("Take an umbrella")
+else:
+    print("Leave it at home")
+
+temp = 14
+if temp > 25:
+    print("Hot")
+elif temp > 15:
+    print("Mild")
+else:
+    print("Cold")         # Cold
+
+age = 20
+label = "adult" if age >= 18 else "minor"
+print(label)              # adult`,
+  problems:[
+    { d:"E", title:"Grade", text:"Print the grade for the score: A for 80 and above, B for 70 to 79, C for 60 to 69, D for 50 to 59, and F below 50. A score of 72 should print B.",
+      hint:"Check the highest band first with if, then work down with elif.",
+      starter:`score = 72
+# print the grade
+` },
+    { d:"M", title:"Leap year", text:"A year is a leap year if it divides by 4, except years that divide by 100, unless they also divide by 400. Print whether 2024, 1900 and 2000 are leap years (True, False, True).",
+      hint:"(year % 4 == 0 and year % 100 != 0) or year % 400 == 0.",
+      starter:`year = 2024
+# print True or False, then try 1900 and 2000
+` }
+  ]},
+
+{ title:"Loops", blurb:"Repeating work with for and while", src:["10_Day_Loops/10_loops.md"],
+  concept:[
+    "A loop repeats the same steps. Everyday example: dealing cards. You do the same action for each player, one after another.",
+    "`for` goes through each item of a list, string or range: `for fruit in fruits:`. `range(5)` gives 0 to 4, and `range(1, 11)` gives 1 to 10.",
+    "`while` repeats as long as a condition stays True. Make sure something inside changes, or it never stops.",
+    "`break` leaves the loop early. `continue` skips the rest of this round and moves to the next one.",
+    "Loop through a dictionary with `for key, value in d.items():`, and through a list with positions using `for i, x in enumerate(items):`."
+  ],
+  code:`for fruit in ["apple", "kiwi"]:
+    print(fruit)
+
+total = 0
+for n in range(1, 6):
+    total += n
+print(total)          # 15
+
+count = 3
+while count > 0:
+    print(count)
+    count -= 1        # 3, 2, 1
+
+for n in range(10):
+    if n == 5:
+        break         # stop at 5
+    if n % 2 == 0:
+        continue      # skip even numbers
+    print(n)          # 1, 3`,
+  problems:[
+    { d:"E", title:"Sums", text:"Print the sum of all numbers from 0 to 100 (5050), the sum of the even ones (2550) and the sum of the odd ones (2500).",
+      hint:"range(101) includes 100. Inside the loop, n % 2 == 0 tells you whether n is even.",
+      starter:`# use a for loop over range(101)
+` },
+    { d:"M", title:"Triangle", text:"Print this triangle of 7 rows: # on the first row, ## on the second, up to ####### on the last.",
+      hint:"\"#\" * 3 gives ###. Loop from 1 to 7.",
+      starter:`# print the triangle
+` }
+  ]},
+
+{ title:"Functions", blurb:"Writing a piece of code once and using it many times", src:["11_Day_Functions/11_functions.md"],
+  concept:[
+    "A function is a named recipe. Write the steps once with `def`, then use it whenever you need it by calling its name.",
+    "Parameters are the ingredients you pass in: `def greet(name):`. When you call `greet(\"Ada\")`, name holds \"Ada\".",
+    "`return` hands a result back so you can store or reuse it. `print` only shows it on screen. Most LeetCode answers are a function that returns something.",
+    "Parameters can have defaults: `def greet(name, greeting=\"Hello\"):`. You can also name arguments when calling: `greet(greeting=\"Hi\", name=\"Bo\")`."
+  ],
+  code:`def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+print(greet("Ada"))                  # Hello, Ada!
+print(greet("Bo", greeting="Hi"))    # Hi, Bo!
+
+def area(width, height):
+    return width * height
+
+total = area(3, 4) + area(2, 5)
+print(total)                         # 22`,
+  problems:[
+    { d:"E", title:"Temperature", text:"Write celsius_to_fahrenheit(c), which returns c * 9 / 5 + 32. Print the results for 0 (32.0) and 100 (212.0).",
+      hint:"One line inside the function: return the formula.",
+      starter:`def celsius_to_fahrenheit(c):
+    pass
+
+print(celsius_to_fahrenheit(0))
+print(celsius_to_fahrenheit(100))` },
+    { d:"M", title:"Prime check", text:"Write is_prime(n), which returns True if n is greater than 1 and has no divisors other than 1 and itself.",
+      hint:"Try every divisor from 2 up to the square root of n. If any divides n exactly, it is not prime.",
+      starter:`def is_prime(n):
+    pass
+
+print(is_prime(2), is_prime(15), is_prime(17), is_prime(1))   # True False True False` }
+  ]},
+
+{ title:"Modules", blurb:"Using ready-made toolboxes with import", src:["12_Day_Modules/12_modules.md"],
+  concept:[
+    "A module is a file full of ready-made tools. Instead of building everything yourself, you borrow a toolbox with `import`.",
+    "`import math` gives you `math.sqrt()`, `math.pi`, `math.floor()` and more. `from math import sqrt` lets you write `sqrt()` without the prefix.",
+    "`import random` gives you `random.randint(1, 6)` for a dice roll, `random.choice(items)` to pick one item, and `random.shuffle(items)`.",
+    "Your own .py file is a module too. Put functions in helpers.py, and another file can use them with `import helpers`.",
+    "On LeetCode you will often use `collections`, `heapq` and `math`."
+  ],
+  code:`import math
+print(math.sqrt(16))         # 4.0
+print(round(math.pi, 2))     # 3.14
+
+from math import floor
+print(floor(3.9))            # 3
+
+import random
+print(random.randint(1, 6))  # a dice roll
+print(random.choice(["red", "green", "blue"]))`,
+  problems:[
+    { d:"E", title:"Circle area", text:"Print the area of a circle with radius 7, rounded to 2 decimal places (153.94). The area is pi times the radius squared.",
+      hint:"Use math.pi and r ** 2, then round(value, 2).",
+      starter:`import math
+radius = 7
+# print the area
+` },
+    { d:"M", title:"Random ID", text:"Write random_id(), which returns 6 random characters chosen from letters and digits, such as aK3x9Q.",
+      hint:"string.ascii_letters + string.digits gives all the characters. Pick 6 with random.choice and join them.",
+      starter:`import random
+import string
+
+def random_id():
+    pass
+
+print(random_id())` }
+  ]},
+
+{ title:"List comprehension", blurb:"Building lists in a single readable line", src:["13_Day_List_comprehension/13_list_comprehension.md"],
+  concept:[
+    "A list comprehension builds a new list in one line: `[x * 2 for x in nums]` doubles every number.",
+    "Read it left to right: what to keep, then where it comes from. Everyday version: \"the price with VAT, for each price on the receipt\".",
+    "Add `if` at the end to filter: `[x for x in nums if x > 0]` keeps only positive numbers.",
+    "Two `for` parts handle nested lists: `[x for row in grid for x in row]` flattens a grid.",
+    "A `lambda` is a tiny function written in one line: `double = lambda x: x * 2`. You will use these with sorting in the next lesson."
+  ],
+  code:`nums = [1, -2, 3, -4]
+print([x * 2 for x in nums])        # [2, -4, 6, -8]
+print([x for x in nums if x > 0])   # [1, 3]
+
+words = ["apple", "kiwi"]
+print([w.upper() for w in words])   # ['APPLE', 'KIWI']
+
+grid = [[1, 2], [3, 4]]
+print([x for row in grid for x in row])   # [1, 2, 3, 4]
+
+double = lambda x: x * 2
+print(double(5))                    # 10`,
+  problems:[
+    { d:"E", title:"Squares and evens", text:"Using list comprehensions, print the squares of 0 to 10, then the even numbers from -4 to 4.",
+      hint:"[n ** 2 for n in range(11)], and add if n % 2 == 0 for the evens.",
+      starter:`# print the squares of 0 to 10
+# print the even numbers from -4 to 4
+` },
+    { d:"M", title:"Flatten", text:"Turn the grid into one flat list, [1, 2, 3, 4, 5, 6, 7, 8, 9], with a single list comprehension.",
+      hint:"Write the outer for first (each row), then the inner for (each number in the row).",
+      starter:`grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# print the flat list
+` }
+  ]},
+
+{ title:"Higher order functions", blurb:"Passing functions into other functions: map, filter and sorted", src:["14_Day_Higher_order_functions/14_higher_order_functions.md"],
+  concept:[
+    "In Python a function is a value, like a number. You can store it in a variable, or hand it to another function.",
+    "A higher order function takes a function as input. Everyday example: telling a friend \"sort these photos by date\". You hand over the rule, and they do the sorting.",
+    "`map(f, items)` applies f to every item. `filter(f, items)` keeps the items where f gives True. Wrap them in `list()` to see the result.",
+    "`sorted(items, key=f)` sorts by whatever f returns, such as `key=len` to sort words by length. This shows up constantly in LeetCode.",
+    "`functools.reduce(f, items)` combines a list into one value, step by step."
+  ],
+  code:`names = ["ada", "bo", "cy"]
+print(list(map(str.upper, names)))      # ['ADA', 'BO', 'CY']
+
+nums = [1, 2, 3, 4, 5, 6]
+print(list(filter(lambda n: n % 2 == 0, nums)))   # [2, 4, 6]
+
+words = ["banana", "fig", "apple"]
+print(sorted(words, key=len))           # ['fig', 'apple', 'banana']
+
+from functools import reduce
+print(reduce(lambda a, b: a + b, nums)) # 21`,
+  problems:[
+    { d:"E", title:"Map and filter", text:"Use map to make every country name uppercase, and filter to keep only the countries whose name has 6 letters or more.",
+      hint:"map(str.upper, countries), and filter(lambda c: len(c) >= 6, countries). Wrap both in list().",
+      starter:`countries = ["Nigeria", "Ghana", "Kenya", "England", "Peru"]
+# print the uppercase list
+# print the long names
+` },
+    { d:"M", title:"Sort by length", text:"Sort the words by length, shortest first, and break ties alphabetically. The result is ['fig', 'kiwi', 'pear', 'apple', 'banana'].",
+      hint:"A key can return a tuple: key=lambda w: (len(w), w).",
+      starter:`words = ["pear", "banana", "fig", "kiwi", "apple"]
+# print the sorted list
+` }
+  ]},
+
+{ title:"Errors and exceptions", blurb:"Reading error messages and handling problems with try and except", src:["15_Day_Python_type_errors/15_python_type_errors.md", "17_Day_Exception_handling/17_exception_handling.md"],
+  concept:[
+    "Errors are normal. Read the last line of the message first: it names the error and says what went wrong. The line above it shows where.",
+    "Common ones: `NameError` (a name that does not exist, often a typo), `TypeError` (mixing types, like \"3\" + 4), `IndexError` (a position past the end), `KeyError` (a missing dictionary key), `ValueError` (`int(\"abc\")`) and `ZeroDivisionError`.",
+    "`try` and `except` let your program carry on when something might fail. Everyday example: try to pay by card; if the card is declined, pay with cash.",
+    "`else` runs only if nothing failed, and `finally` always runs. `raise ValueError(\"message\")` creates your own error."
+  ],
+  code:`try:
+    number = int("abc")
+except ValueError:
+    print("That was not a number")
+
+def divide(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        return None
+    else:
+        return result
+    finally:
+        print("divide finished")
+
+print(divide(10, 2))   # 5.0
+print(divide(1, 0))    # None`,
+  problems:[
+    { d:"E", title:"Safe divide", text:"Write safe_divide(a, b), which returns a / b, or None when b is 0.",
+      hint:"Put the division inside try, and catch ZeroDivisionError.",
+      starter:`def safe_divide(a, b):
+    pass
+
+print(safe_divide(10, 4))   # 2.5
+print(safe_divide(3, 0))    # None` },
+    { d:"M", title:"Clean the numbers", text:"Write to_numbers(items), which converts each string to a float and skips any that cannot be converted.",
+      hint:"Loop over the items, and wrap float(item) in try with except ValueError: continue.",
+      starter:`def to_numbers(items):
+    pass
+
+print(to_numbers(["4", "x", "7", "2.5", ""]))   # [4.0, 7.0, 2.5]` }
+  ]},
+
+{ title:"Dates and times", blurb:"Working with dates using the datetime module", src:["16_Day_Python_date_time/16_python_datetime.md"],
+  concept:[
+    "The `datetime` module handles dates and times. `date(2026, 12, 25)` is Christmas Day 2026, and `datetime.now()` is this exact moment.",
+    "Subtracting two dates gives a `timedelta`, and its `.days` is the gap in days. Everyday example: counting the days until payday.",
+    "`strftime` turns a date into text in any format: `%d` day, `%m` month number, `%B` month name, `%A` weekday name, `%Y` year.",
+    "`strptime` does the reverse, reading text into a date: `datetime.strptime(\"16/11/2026\", \"%d/%m/%Y\")`."
+  ],
+  code:`from datetime import date, datetime, timedelta
+
+xmas = date(2026, 12, 25)
+start = date(2026, 11, 16)
+print((xmas - start).days)              # 39
+
+print(xmas.strftime("%d/%m/%Y"))        # 25/12/2026
+print(xmas + timedelta(days=7))         # 2027-01-01
+
+d = datetime.strptime("16/11/2026", "%d/%m/%Y")
+print(d.year, d.month)                  # 2026 11`,
+  problems:[
+    { d:"E", title:"Days between", text:"Print how many days there are from 1 March 2026 to 1 June 2026 (92).",
+      hint:"Make two date objects, subtract them, and use .days.",
+      starter:`from datetime import date
+# print the number of days
+` },
+    { d:"M", title:"Format a date", text:"Print 5 January 2026 in the format Monday 05 January 2026.",
+      hint:"strftime(\"%A %d %B %Y\").",
+      starter:`from datetime import date
+day = date(2026, 1, 5)
+# print the formatted date
+` }
+  ]},
+
+{ title:"Regular expressions", blurb:"Finding patterns in text", src:["18_Day_Regular_expressions/18_regular_expressions.md"],
+  concept:[
+    "A regular expression (regex) is a search pattern. Instead of looking for one exact word, you describe the shape of what you want, such as \"any run of digits\".",
+    "Everyday example: spotting every phone number in a long message without knowing the numbers in advance.",
+    "Building blocks: `\\d` a digit, `\\w` a letter, digit or underscore, `\\s` a space, `.` any character, `+` one or more, `*` zero or more, `?` optional, and `[abc]` any one of a, b or c.",
+    "The tools live in `re`: `re.findall(pattern, text)` returns every match, `re.search` finds the first one, and `re.sub(pattern, new, text)` replaces matches. Write patterns as raw strings like `r\"\\d+\"`."
+  ],
+  code:`import re
+
+text = "Call 0712 345 or 0788 999 before 5pm"
+print(re.findall(r"\\d+", text))         # ['0712', '345', '0788', '999', '5']
+
+print(re.sub(r"\\s+", " ", "too    many   spaces"))   # too many spaces
+
+match = re.search(r"\\d+pm", text)
+print(match.group())                    # 5pm`,
+  problems:[
+    { d:"E", title:"Find the numbers", text:"Print every number in the sentence as a list: ['12', '3', '45'].",
+      hint:"re.findall with the pattern r\"\\d+\".",
+      starter:`import re
+text = "I paid 12 pounds for 3 books and 45 pens"
+# print the list of numbers
+` },
+    { d:"M", title:"Find the emails", text:"Print every email address in the text.",
+      hint:"An email is word characters and dots, then @, then more word characters and dots: r\"[\\w.]+@[\\w.]+\\w\".",
+      starter:`import re
+text = "Contact ada@example.com or bob.smith@mail.co.uk today."
+# print the email addresses
+` }
+  ]},
+
+{ title:"Files", blurb:"Reading and writing text and JSON files", src:["19_Day_File_handling/19_file_handling.md"],
+  concept:[
+    "`open(name, mode)` opens a file. The mode says what you want: `\"r\"` to read, `\"w\"` to write (it replaces the old content), and `\"a\"` to add to the end.",
+    "Use `with open(...) as f:`. Like a door that closes behind you, the file is closed automatically when the block ends.",
+    "`f.write(text)` writes, `f.read()` reads everything, and `for line in f:` reads one line at a time. Add `\\n` yourself to end a line.",
+    "The `json` module saves dictionaries and lists as text: `json.dump(data, f)` to save, `json.load(f)` to read back.",
+    "On this page, files go into a temporary folder that is wiped after each run. On your laptop they are saved for real."
+  ],
+  code:`with open("notes.txt", "w") as f:
+    f.write("first line\\n")
+    f.write("second line\\n")
+
+with open("notes.txt") as f:
+    for line in f:
+        print(line.strip())
+
+import json
+with open("me.json", "w") as f:
+    json.dump({"name": "Ada", "age": 36}, f)
+with open("me.json") as f:
+    print(json.load(f)["name"])      # Ada`,
+  problems:[
+    { d:"E", title:"Write and count", text:"Write the three names to names.txt, one per line. Then read the file back and print how many lines it has (3).",
+      hint:"Write each name followed by \"\\n\". Then readlines() gives a list you can len().",
+      starter:`names = ["Ada", "Bo", "Cy"]
+# write them to names.txt, then read back and count
+` },
+    { d:"M", title:"Save as JSON", text:"Save the dictionary to profile.json, load it back into a new variable, and print the second skill.",
+      hint:"json.dump(profile, f) inside a with block in \"w\" mode, then json.load(f) in \"r\" mode.",
+      starter:`import json
+profile = {"name": "Ada", "skills": ["python", "sql", "excel"]}
+# save it, load it back, print the second skill
+` }
+  ]},
+
+{ title:"Classes and objects", blurb:"Making your own types with class", src:["21_Day_Classes_and_objects/21_classes_and_objects.md"],
+  concept:[
+    "A class is a blueprint and an object is something built from it. Everyday example: a cookie cutter is the class, and each cookie is an object. Same shape, but each can have different toppings.",
+    "`__init__` runs when an object is created and sets up its data. `self` means \"this particular object\", so `self.name = name` stores a name on this one.",
+    "Methods are functions that belong to the class, and always take `self` first: `def greet(self):`.",
+    "Inheritance builds a new class on an old one: `class Student(Person):` gets everything Person has, and can add more.",
+    "LeetCode uses classes constantly: every answer sits inside `class Solution:`, and design problems ask you to build a whole class."
+  ],
+  code:`class Person:
+    def __init__(self, name, city):
+        self.name = name
+        self.city = city
+
+    def greet(self):
+        return f"Hi, I'm {self.name} from {self.city}"
+
+ada = Person("Ada", "London")
+print(ada.greet())      # Hi, I'm Ada from London
+
+class Student(Person):
+    def __init__(self, name, city, course):
+        super().__init__(name, city)
+        self.course = course
+
+bo = Student("Bo", "Leeds", "Computing")
+print(bo.greet(), "and I study", bo.course)`,
+  problems:[
+    { d:"E", title:"Rectangle class", text:"Build a Rectangle class that stores width and height, with area() and perimeter() methods.",
+      hint:"Store both values on self in __init__, then use self.width and self.height inside the methods.",
+      starter:`class Rectangle:
+    def __init__(self, width, height):
+        pass
+
+    def area(self):
+        pass
+
+    def perimeter(self):
+        pass
+
+r = Rectangle(8, 5)
+print(r.area(), r.perimeter())   # 40 26` },
+    { d:"M", title:"Stack class", text:"Build a Stack class with push(x), pop(), peek() and is_empty(), using a list inside. This is the stack from Problem solving lesson 6.",
+      hint:"Keep self.items = [] in __init__. append to push, pop() to pop, and self.items[-1] to peek.",
+      starter:`class Stack:
+    def __init__(self):
+        pass
+
+    def push(self, x):
+        pass
+
+    def pop(self):
+        pass
+
+    def peek(self):
+        pass
+
+    def is_empty(self):
+        pass
+
+s = Stack()
+s.push(1)
+s.push(2)
+print(s.peek())      # 2
+print(s.pop())       # 2
+print(s.is_empty())  # False` }
+  ]}
+];
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script>
+const TESTS = {
+"b1-1":[["len([l for l in _out.splitlines() if l.strip()]) >= 2","True","prints at least two lines"]],
+"b1-2":[["'11' in _out and '14' in _out","True","prints 11 and 14"]],
+"b2-1":[["full_name","'Ada Lovelace'"],["'12' in _out","True","prints the length, 12"]],
+"b2-2":[["'13.5' in _out","True","prints 13.5"]],
+"b3-1":[["'40' in _out and '26' in _out","True","prints 40 and 26"]],
+"b3-2":[["'2 hours 15 minutes' in _out","True","prints 2 hours 15 minutes"]],
+"b4-1":[["'A.L.' in _out","True","prints A.L."]],
+"b4-2":[["'8' in _out and 'confidently' in _out","True","prints 8 words and the word confidently"]],
+"b5-1":[["fruits","['kiwi', 'apple', 'orange', 'mango']"]],
+"b5-2":[["all(str(x) in _out for x in (19, 26, 22.8, 24))","True","prints 19, 26, 22.8 and 24"]],
+"b6-1":[["'Ada is 36 and lives in London' in _out","True","prints Ada is 36 and lives in London"]],
+"b6-2":[["family","('Tunde', 'Kemi', 'Mum', 'Dad')"],["'4' in _out and 'True' in _out","True","prints 4 and True"]],
+"b7-1":[["'4' in _out","True","prints 4"]],
+"b7-2":[["all(w in _out for w in ['python', 'sql', 'java', 'excel'])","True","prints the shared, combined and own skills"]],
+"b8-1":[["isinstance(me, dict) and {'name', 'city', 'skills'} <= set(me)","True","me has name, city and skills"],["isinstance(me.get('skills'), list) and len(me['skills']) > 0","True","skills is a non-empty list"]],
+"b8-2":[["contacts","{'Bo': '0700', 'Dami': '0755'}"]],
+"b9-1":[["_out.split()[0] if _out.split() else ''","'B'","prints B for a score of 72"]],
+"b9-2":[["'True' in _out","True","prints True for 2024"]],
+"b10-1":[["all(s in _out for s in ['5050', '2550', '2500'])","True","prints 5050, 2550 and 2500"]],
+"b10-2":[["[l.strip() for l in _out.strip().splitlines()]","['#', '##', '###', '####', '#####', '######', '#######']","prints the 7-row triangle"]],
+"b11-1":[["celsius_to_fahrenheit(0)","32"],["celsius_to_fahrenheit(100)","212"],["celsius_to_fahrenheit(-40)","-40"]],
+"b11-2":[["[n for n in range(30) if is_prime(n)]","[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]","finds the primes below 30"],["is_prime(1)","False"]],
+"b12-1":[["'153.94' in _out","True","prints 153.94"]],
+"b12-2":[["len(random_id())","6"],["random_id().isalnum()","True"],["len({random_id() for _ in range(20)}) > 1","True","gives different IDs each time"]],
+"b13-1":[["'[0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100]' in _out","True","prints the squares"],["'[-4, -2, 0, 2, 4]' in _out","True","prints the evens"]],
+"b13-2":[["'[1, 2, 3, 4, 5, 6, 7, 8, 9]' in _out","True","prints the flat list"]],
+"b14-1":[["\"['NIGERIA', 'GHANA', 'KENYA', 'ENGLAND', 'PERU']\" in _out","True","prints the uppercase list"],["\"['Nigeria', 'England']\" in _out","True","prints the long names"]],
+"b14-2":[["\"['fig', 'kiwi', 'pear', 'apple', 'banana']\" in _out","True","prints the sorted list"]],
+"b15-1":[["safe_divide(10, 4)","2.5"],["safe_divide(3, 0)","None"]],
+"b15-2":[["to_numbers(['4', 'x', '7', '2.5', ''])","[4.0, 7.0, 2.5]"],["to_numbers([])","[]"]],
+"b16-1":[["'92' in _out","True","prints 92"]],
+"b16-2":[["'Monday 05 January 2026' in _out","True","prints Monday 05 January 2026"]],
+"b17-1":[["\"['12', '3', '45']\" in _out","True","prints ['12', '3', '45']"]],
+"b17-2":[["'ada@example.com' in _out and 'bob.smith@mail.co.uk' in _out","True","prints both email addresses"]],
+"b18-1":[["open('names.txt').read().split()","['Ada', 'Bo', 'Cy']","names.txt holds the three names"],["'3' in _out","True","prints 3"]],
+"b18-2":[["__import__('json').load(open('profile.json'))","{'name': 'Ada', 'skills': ['python', 'sql', 'excel']}","profile.json holds the dictionary"],["'sql' in _out","True","prints sql"]],
+"b19-1":[["Rectangle(8, 5).area()","40"],["Rectangle(8, 5).perimeter()","26"],["Rectangle(2, 3).area()","6"]],
+"b19-2":[["(lambda s: (s.is_empty(), s.push(1), s.push(2), s.peek(), s.pop(), s.pop(), s.is_empty()))(Stack())","(True, None, None, 2, 2, 1, True)","is_empty, push, push, peek, pop, pop, is_empty"]],
+
+"p412":[["fizzBuzz(3)","['1', '2', 'Fizz']"],["fizzBuzz(5)","['1', '2', 'Fizz', '4', 'Buzz']"],["fizzBuzz(15)[-1]","'FizzBuzz'"]],
+"p1480":[["runningSum([1, 2, 3, 4])","[1, 3, 6, 10]"],["runningSum([1, 1, 1, 1, 1])","[1, 2, 3, 4, 5]"],["runningSum([3, 1, 2, 10, 1])","[3, 4, 6, 16, 17]"]],
+"p12":[["intToRoman(3)","'III'"],["intToRoman(58)","'LVIII'"],["intToRoman(1994)","'MCMXCIV'"],["intToRoman(3999)","'MMMCMXCIX'"]],
+"p273":[["numberToWords(0)","'Zero'"],["numberToWords(123)","'One Hundred Twenty Three'"],["numberToWords(12345)","'Twelve Thousand Three Hundred Forty Five'"],["numberToWords(1000010)","'One Million Ten'"],["numberToWords(1234567)","'One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven'"]],
+"p14":[["longestCommonPrefix(['flower', 'flow', 'flight'])","'fl'"],["longestCommonPrefix(['dog', 'racecar', 'car'])","''"],["longestCommonPrefix(['a'])","'a'"]],
+"p238":[["productExceptSelf([1, 2, 3, 4])","[24, 12, 8, 6]"],["productExceptSelf([-1, 1, 0, -3, 3])","[0, 0, 9, 0, 0]"]],
+"p41":[["firstMissingPositive([1, 2, 0])","3"],["firstMissingPositive([3, 4, -1, 1])","2"],["firstMissingPositive([7, 8, 9, 11, 12])","1"]],
+"p242":[["isAnagram('anagram', 'nagaram')","True"],["isAnagram('rat', 'car')","False"],["isAnagram('ab', 'a')","False"]],
+"p128":[["longestConsecutive([100, 4, 200, 1, 3, 2])","4"],["longestConsecutive([0, 3, 7, 2, 5, 8, 4, 6, 0, 1])","9"],["longestConsecutive([])","0"]],
+"p149":[["maxPoints([[1, 1], [2, 2], [3, 3]])","3"],["maxPoints([[1, 1], [3, 2], [5, 3], [4, 1], [2, 3], [1, 4]])","4"],["maxPoints([[0, 0]])","1"]],
+"p125":[["isPalindrome('A man, a plan, a canal: Panama')","True"],["isPalindrome('race a car')","False"],["isPalindrome(' ')","True"]],
+"p15":[["sorted(sorted(t) for t in threeSum([-1, 0, 1, 2, -1, -4]))","[[-1, -1, 2], [-1, 0, 1]]","threeSum([-1, 0, 1, 2, -1, -4]), any order"],["list(threeSum([0, 1, 1]))","[]"],["sorted(sorted(t) for t in threeSum([0, 0, 0, 0]))","[[0, 0, 0]]","threeSum([0, 0, 0, 0]) has no duplicates"]],
+"p42":[["trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1])","6"],["trap([4, 2, 0, 3, 2, 5])","9"]],
+"p643":[["findMaxAverage([1, 12, -5, -6, 50, 3], 4)","12.75"],["findMaxAverage([5], 1)","5"]],
+"p424":[["characterReplacement('ABAB', 2)","4"],["characterReplacement('AABABBA', 1)","4"]],
+"p76":[["minWindow('ADOBECODEBANC', 'ABC')","'BANC'"],["minWindow('a', 'a')","'a'"],["minWindow('a', 'aa')","''"]],
+"p232":[["(lambda q: (q.push(1), q.push(2), q.peek(), q.pop(), q.empty(), q.pop(), q.empty()))(MyQueue())","(None, None, 1, 1, False, 2, True)","push, push, peek, pop, empty, pop, empty"]],
+"p739":[["dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73])","[1, 1, 4, 2, 1, 1, 0, 0]"],["dailyTemperatures([30, 40, 50, 60])","[1, 1, 1, 0]"],["dailyTemperatures([30, 60, 90])","[1, 1, 0]"]],
+"p84":[["largestRectangleArea([2, 1, 5, 6, 2, 3])","10"],["largestRectangleArea([2, 4])","4"]],
+"p35":[["searchInsert([1, 3, 5, 6], 5)","2"],["searchInsert([1, 3, 5, 6], 2)","1"],["searchInsert([1, 3, 5, 6], 7)","4"],["searchInsert([1, 3, 5, 6], 0)","0"]],
+"p33":[["search([4, 5, 6, 7, 0, 1, 2], 0)","4"],["search([4, 5, 6, 7, 0, 1, 2], 3)","-1"],["search([1], 0)","-1"],["search([3, 1], 1)","1"]],
+"p4":[["findMedianSortedArrays([1, 3], [2])","2"],["findMedianSortedArrays([1, 2], [3, 4])","2.5"],["findMedianSortedArrays([], [1])","1"]],
+"p88":[["(lambda a: (merge(a, 3, [2, 5, 6], 3), a)[1])([1, 2, 3, 0, 0, 0])","[1, 2, 2, 3, 5, 6]","merge([1, 2, 3, 0, 0, 0], 3, [2, 5, 6], 3)"],["(lambda a: (merge(a, 0, [1], 1), a)[1])([0])","[1]","merge([0], 0, [1], 1)"]],
+"p912":[["sortArray([5, 2, 3, 1])","[1, 2, 3, 5]"],["sortArray([5, 1, 1, 2, 0, 0])","[0, 0, 1, 1, 2, 5]"]],
+"p315":[["countSmaller([5, 2, 6, 1])","[2, 1, 1, 0]"],["countSmaller([-1, -1])","[0, 0]"]],
+"p21":[["to_list(mergeTwoLists(build([1, 2, 4]), build([1, 3, 4])))","[1, 1, 2, 3, 4, 4]"],["to_list(mergeTwoLists(build([]), build([0])))","[0]"]],
+"p19":[["to_list(removeNthFromEnd(build([1, 2, 3, 4, 5]), 2))","[1, 2, 3, 5]"],["to_list(removeNthFromEnd(build([1]), 1))","[]"],["to_list(removeNthFromEnd(build([1, 2]), 1))","[1]"]],
+"p25":[["to_list(reverseKGroup(build([1, 2, 3, 4, 5]), 2))","[2, 1, 4, 3, 5]"],["to_list(reverseKGroup(build([1, 2, 3, 4, 5]), 3))","[3, 2, 1, 4, 5]"]],
+"p509":[["fib(0)","0"],["fib(10)","55"],["fib(30)","832040"]],
+"p46":[["sorted(permute([1, 2, 3]))","[[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]","permute([1, 2, 3]), any order"],["permute([1])","[[1]]"]],
+"p51":[["sorted(solveNQueens(4))","[['..Q.', 'Q...', '...Q', '.Q..'], ['.Q..', '...Q', 'Q...', '..Q.']]","solveNQueens(4), any order"],["len(solveNQueens(8))","92"]],
+"p226":[["flat(invertTree(tree([4, 2, 7, 1, 3, 6, 9])))","[4, 7, 2, 9, 6, 3, 1]"],["flat(invertTree(tree([2, 1, 3])))","[2, 3, 1]"]],
+"p102":[["levelOrder(tree([3, 9, 20, None, None, 15, 7]))","[[3], [9, 20], [15, 7]]"],["levelOrder(tree([1]))","[[1]]"],["levelOrder(None)","[]"]],
+"p124":[["maxPathSum(tree([1, 2, 3]))","6"],["maxPathSum(tree([-10, 9, 20, None, None, 15, 7]))","42"],["maxPathSum(tree([-3]))","-3"]],
+"p1046":[["lastStoneWeight([2, 7, 4, 1, 8, 1])","1"],["lastStoneWeight([1])","1"],["lastStoneWeight([2, 2])","0"]],
+"p347":[["sorted(topKFrequent([1, 1, 1, 2, 2, 3], 2))","[1, 2]","topKFrequent([1, 1, 1, 2, 2, 3], 2), any order"],["list(topKFrequent([1], 1))","[1]"]],
+"p295":[["(lambda m: (m.addNum(1), m.addNum(2), m.findMedian(), m.addNum(3), m.findMedian()))(MedianFinder())","(None, None, 1.5, None, 2)","addNum 1, addNum 2, median, addNum 3, median"]],
+"p733":[["floodFill([[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2)","[[2, 2, 2], [2, 2, 0], [2, 0, 1]]"],["floodFill([[0, 0, 0], [0, 0, 0]], 0, 0, 0)","[[0, 0, 0], [0, 0, 0]]"]],
+"p207":[["canFinish(2, [[1, 0]])","True"],["canFinish(2, [[1, 0], [0, 1]])","False"],["canFinish(4, [[1, 0], [2, 1], [3, 2]])","True"]],
+"p127":[["ladderLength('hit', 'cog', ['hot', 'dot', 'dog', 'lot', 'log', 'cog'])","5"],["ladderLength('hit', 'cog', ['hot', 'dot', 'dog', 'lot', 'log'])","0"]],
+"p455":[["findContentChildren([1, 2, 3], [1, 1])","1"],["findContentChildren([1, 2], [1, 2, 3])","2"]],
+"p134":[["canCompleteCircuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2])","3"],["canCompleteCircuit([2, 3, 4], [3, 4, 3])","-1"]],
+"p135":[["candy([1, 0, 2])","5"],["candy([1, 2, 2])","4"]],
+"p746":[["minCostClimbingStairs([10, 15, 20])","15"],["minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1])","6"]],
+"p322":[["coinChange([1, 2, 5], 11)","3"],["coinChange([2], 3)","-1"],["coinChange([1], 0)","0"]],
+"p1235":[["jobScheduling([1, 2, 3, 3], [3, 4, 5, 6], [50, 10, 40, 70])","120"],["jobScheduling([1, 2, 3, 4, 6], [3, 5, 10, 6, 9], [20, 20, 100, 70, 60])","150"],["jobScheduling([1, 1, 1], [2, 3, 4], [5, 6, 4])","6"]]
+};
+</script>
+<script>
+(function(){
+"use strict";
+var DIFF = {E:"Easy", M:"Medium", H:"Hard"};
+var KEY = "python-daily-v1";
+var SRC = "https://github.com/Asabeneh/30-Days-Of-Python/blob/master/";
+var state = {status:{}, code:{}, read:{}, updated:0};
+var view = document.getElementById("view");
+var HARNESS = "import sys, io, json, traceback\ndef __check():\n    g = globals()\n    buf = io.StringIO()\n    old = sys.stdout\n    sys.stdout = buf\n    try:\n        if __prelude:\n            exec(__prelude, g)\n        exec(compile(__user, \"<your code>\", \"exec\"), g)\n    except BaseException:\n        sys.stdout = old\n        lines = traceback.format_exc().splitlines()\n        keep = [l for l in lines if \"harness\" not in l and \"<exec>\" not in l]\n        return json.dumps({\"error\": \"\\n\".join(keep[-6:]), \"out\": buf.getvalue()})\n    finally:\n        sys.stdout = old\n    g[\"_out\"] = buf.getvalue()\n    res = []\n    for t in json.loads(__tests):\n        label = t[2] if len(t) > 2 else t[0]\n        sys.stdout = io.StringIO()\n        try:\n            got = eval(t[0], g)\n            want = eval(t[1], g)\n            res.append({\"label\": label, \"ok\": bool(got == want), \"got\": repr(got), \"want\": repr(want)})\n        except BaseException as e:\n            res.append({\"label\": label, \"ok\": False, \"got\": type(e).__name__ + \": \" + str(e), \"want\": t[1]})\n        finally:\n            sys.stdout = old\n    return json.dumps({\"out\": g[\"_out\"], \"results\": res})\n__result = __check()\n";
+var editors = {};
+function getCode(id){ var ed = editors[id]; if (ed) return ed.getValue(); var ta = document.getElementById("code-" + id); return ta ? ta.value : ""; }
+function setCode(id, v){ var ed = editors[id]; if (ed) ed.setValue(v); else { var ta = document.getElementById("code-" + id); if (ta) ta.value = v; } }
+function codeChanged(id, v){
+  if (id === "playground"){ state.code.playground = v; save(); return; }
+  var p = byId(id); if (!p) return;
+  if (v === p.starter) delete state.code[id]; else state.code[id] = v;
+  save();
+}
+function initEditors(){
+  editors = {};
+  if (!window.CodeMirror) return;
+  Array.prototype.forEach.call(view.querySelectorAll("textarea.code"), function(ta){
+    var id = ta.id.slice(5);
+    var ed = window.CodeMirror.fromTextArea(ta, {
+      mode:"python", lineNumbers:true, indentUnit:4, tabSize:4, indentWithTabs:false, smartIndent:true,
+      matchBrackets:true, autoCloseBrackets:true, viewportMargin:Infinity, lineWrapping:false,
+      extraKeys:{
+        "Tab":function(cm){ if (cm.somethingSelected()) cm.indentSelection("add"); else cm.replaceSelection("    ", "end"); },
+        "Shift-Tab":"indentLess",
+        "Ctrl-Enter":function(){ quickAction(id); }, "Cmd-Enter":function(){ quickAction(id); }
+      }
+    });
+    ed.on("change", function(){ codeChanged(id, ed.getValue()); });
+    editors[id] = ed;
+  });
+}
+function quickAction(id){
+  var card = view.querySelector('[data-id="' + id + '"]'); if (!card) return;
+  var b = card.querySelector('button[data-act="check"]') || card.querySelector('button[data-act="run"]');
+  if (b && !b.disabled) b.click();
+}
+var TRACKS = [
+  {key:"basics", name:"Python basics", note:"The core topics of 30 Days of Python, one lesson at a time. No deadlines.", lessons:BASICS},
+  {key:"lesson", name:"Problem solving", note:"Data structures and algorithms for LeetCode. Start once the basics feel comfortable.", lessons:LESSONS}
+];
+var all = [], lessonsAll = [];
+TRACKS.forEach(function(T){
+  T.lessons.forEach(function(L, i){
+    L.n = i + 1; L.track = T; L.slug = T.key + "-" + L.n;
+    L.rkey = (T.key === "basics" ? "b" : "") + L.n;
+    lessonsAll.push(L);
+    L.problems.forEach(function(p, j){
+      p.id = p.lc ? "p" + p.lc : "b" + L.n + "-" + (j + 1);
+      p.lesson = L; all.push(p);
+    });
+  });
+});
+function byId(id){ for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i]; return null; }
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function rich(s){ return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>"); }
+function pad(n){ return (n < 10 ? "0" : "") + n; }
+
+/* ---------- saving ---------- */
+function normalise(s){
+  s = s && typeof s === "object" ? s : {};
+  return {status:s.status || {}, code:s.code || {}, read:s.read || {}, updated:Number(s.updated) || 0};
+}
+try { var raw = localStorage.getItem(KEY); if (raw) state = normalise(JSON.parse(raw)); } catch (e) {}
+
+var cloudRef = null, cloudDirty = false, cloudBusy = false, cloudTimer = null;
+var syncEl = document.getElementById("sync");
+function setSync(t){ syncEl.textContent = t; }
+function save(){
+  state.updated = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  if (cloudRef){ cloudDirty = true; clearTimeout(cloudTimer); cloudTimer = setTimeout(pushCloud, 1200); setSync("Saving…"); }
+}
+function pushCloud(){
+  if (!cloudRef || cloudBusy || !cloudDirty) return;
+  cloudBusy = true; cloudDirty = false;
+  cloudRef.set(JSON.parse(JSON.stringify(state))).then(function(){
+    cloudBusy = false;
+    if (cloudDirty) pushCloud(); else setSync("Synced across your devices");
+  }, function(){ cloudBusy = false; setSync("Saved on this device"); });
+}
+function pullCloud(){
+  if (!cloudRef || cloudDirty || cloudBusy) return Promise.resolve();
+  return cloudRef.get().then(function(snap){
+    var remote = snap && snap.exists ? normalise(snap.data()) : null;
+    if (remote && remote.updated > state.updated){
+      state = remote;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      render();
+    } else if (state.updated > (remote ? remote.updated : 0)){
+      cloudDirty = true; pushCloud(); return;
+    }
+    setSync("Synced across your devices");
+  }, function(){ setSync("Saved on this device"); });
+}
+function waitClaude(){
+  return new Promise(function(res){
+    var tries = 0;
+    (function poll(){
+      if (window.claude && typeof window.claude.use === "function") return res(window.claude);
+      if (++tries > 40) return res(null);
+      setTimeout(poll, 100);
+    })();
+  });
+}
+function cap(name){ return waitClaude().then(function(c){ return c ? c.use(name) : null; }).catch(function(){ return null; }); }
+var sample = null;
+cap("sample").then(function(s){ if (s){ sample = s; document.body.classList.add("ai"); } });
+Promise.all([cap("db"), cap("user")]).then(function(r){
+  var db = r[0], user = r[1];
+  if (!db || !user) return;
+  return user.id().then(function(uid){
+    if (!uid) return;
+    cloudRef = db.doc("data/users/" + uid + "/progress");
+    return pullCloud();
+  });
+}).catch(function(){});
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullCloud(); });
+
+/* ---------- progress ---------- */
+function isDone(p){ return state.status[p.id] === "done"; }
+function nextUp(){
+  for (var i = 0; i < all.length; i++) if (!isDone(all[i])) return all[i];
+  return null;
+}
+
+/* ---------- views ---------- */
+function homeView(){
+  var done = all.filter(isDone).length, total = all.length;
+  var p = nextUp(), h = "";
+  h += '<section class="today">';
+  if (p){
+    var L = p.lesson, fresh = !state.read[L.rkey];
+    h += '<span class="eyebrow">' + esc(L.track.name) + ' · Lesson ' + L.n + '</span>';
+    h += '<h1>' + esc(L.title) + '</h1>';
+    h += '<p>' + (fresh ? 'Read through the lesson, then try ' : 'Next exercise: ') + '<strong>' + esc(p.title) + '</strong>. Take as long as you need.</p>';
+  } else {
+    h += '<span class="eyebrow">All done</span><h1>Every exercise solved</h1><p>Pick any Hard problem and solve it again from a blank box.</p>';
+  }
+  h += '<div class="bar"><span style="width:' + (total ? (100 * done / total) : 0) + '%"></span></div>';
+  h += '<div class="row"><span class="count">' + done + ' of ' + total + ' exercises solved</span>';
+  h += '<a class="go" href="#' + (p ? p.lesson.slug : "basics-1") + '">' + (done ? 'Continue' : 'Start lesson 1') + '</a></div>';
+  h += '</section>';
+  TRACKS.forEach(function(T){
+    h += '<section class="ledger"><h2>' + esc(T.name) + '</h2><p class="cx">' + esc(T.note) + '</p>';
+    T.lessons.forEach(function(L){
+      h += '<a class="lrow" href="#' + L.slug + '"><span class="num">' + pad(L.n) + '</span>';
+      h += '<span><span class="t">' + esc(L.title) + '</span><br><span class="b">' + esc(L.blurb) + '</span></span>';
+      h += '<span class="dots" aria-label="' + L.problems.filter(isDone).length + ' of ' + L.problems.length + ' solved">';
+      L.problems.forEach(function(q){ h += '<span class="dot ' + q.d + (isDone(q) ? ' done' : '') + '"></span>'; });
+      h += '</span></a>';
+    });
+    if (T.key === "basics") h += '<p class="cx">The original course also covers packages, virtual environments, web scraping, pandas, databases and APIs. Those need a full setup on your laptop, so they are not included here.</p>';
+    h += '</section>';
+  });
+  view.innerHTML = h;
+  view.style.cssText = "display:flex;flex-direction:column;gap:20px";
+}
+
+function lessonView(L){
+  var T = L.track, h = '<a class="back" href="#home">← All lessons</a>';
+  h += '<div class="lesson-head"><span class="num">' + esc(T.name) + ' · Lesson ' + pad(L.n) + '</span><h1>' + esc(L.title) + '</h1></div>';
+  h += '<section class="sec"><h2>The idea</h2>';
+  L.concept.forEach(function(c){ h += '<p>' + rich(c) + '</p>'; });
+  h += '<pre>' + esc(L.code) + '</pre>';
+  if (L.src){
+    h += '<p class="cx">Go deeper: ' + L.src.map(function(s, i){
+      return '<a href="' + SRC + s + '">the 30 Days of Python lesson' + (L.src.length > 1 ? ' (part ' + (i + 1) + ')' : '') + '</a>';
+    }).join(" and ") + '</p>';
+  }
+  if (!L.worked) h += '<label class="readbox"><input type="checkbox" id="read-' + L.rkey + '"' + (state.read[L.rkey] ? ' checked' : '') + '> I have read this lesson</label>';
+  h += '</section>';
+  var w = L.worked;
+  if (w){
+    h += '<section class="sec"><h2>Worked problem: ' + esc(w.title) + '</h2>';
+    h += '<p class="cx">LeetCode ' + w.lc + '</p><p>' + rich(w.problem) + '</p><ol>';
+    w.steps.forEach(function(s){ h += '<li>' + rich(s) + '</li>'; });
+    h += '</ol><pre>' + esc(w.code) + '</pre><p class="cx">' + esc(w.cx) + '</p>';
+    h += '<label class="readbox"><input type="checkbox" id="read-' + L.rkey + '"' + (state.read[L.rkey] ? ' checked' : '') + '> I have read this lesson</label></section>';
+  }
+  h += '<div class="lesson-head"><h2 style="font-size:22px">Your turn</h2><p class="cx">Type your code in the editor. Check answer tests it against several inputs (Ctrl or Cmd + Enter). Run just shows what your code prints.</p></div>';
+  if (L.prelude) h += '<details><summary>Helpers already loaded for these problems</summary><pre>' + esc(L.prelude) + '</pre></details>';
+  L.problems.forEach(function(p){
+    var code = state.code[p.id] != null ? state.code[p.id] : p.starter;
+    h += '<article class="prob ' + p.d + (isDone(p) ? ' done' : '') + '" data-id="' + p.id + '">';
+    h += '<div class="phead"><span class="pill ' + p.d + '">' + DIFF[p.d] + '</span>';
+    if (p.lc) h += '<span>LeetCode ' + p.lc + '</span><a href="https://leetcode.com/problemset/?search=' + encodeURIComponent(p.title) + '">Find on LeetCode</a>';
+    h += '</div><h3>' + esc(p.title) + '</h3><p>' + rich(p.text) + '</p>';
+    h += '<textarea class="code" id="code-' + p.id + '" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Your code for ' + esc(p.title) + '">' + esc(code) + '</textarea>';
+    h += '<div class="btns">';
+    h += '<button class="btn primary" data-act="check">Check answer</button>';
+    h += '<button class="btn" data-act="run">Run</button>';
+    h += '<button class="btn" data-act="hint">Hint</button>';
+    h += '<button class="btn needs-ai" data-act="review">Review my code</button>';
+    h += '<button class="btn' + (isDone(p) ? ' solved' : '') + '" data-act="done">' + (isDone(p) ? 'Solved ✓' : 'Mark solved') + '</button>';
+    h += '<button class="btn" data-act="reset">Reset</button>';
+    h += '</div>';
+    h += '<p class="no-ai">For a review, paste your code into your chat with Claude.</p>';
+    h += '<div class="panel results" data-slot="check" hidden></div>';
+    h += '<div class="panel out" data-slot="out" hidden></div>';
+    h += '<div class="panel note" data-slot="hint" hidden></div>';
+    h += '<div class="panel note" data-slot="review" hidden></div>';
+    h += '</article>';
+  });
+  var i = lessonsAll.indexOf(L), prev = lessonsAll[i - 1], next = lessonsAll[i + 1];
+  h += '<nav class="nav2">' + (prev ? '<a href="#' + prev.slug + '">← ' + esc(prev.title) + '</a>' : '<span></span>');
+  h += (next ? '<a href="#' + next.slug + '">' + esc(next.title) + ' →</a>' : '<span></span>') + '</nav>';
+  view.innerHTML = h;
+  view.style.cssText = "display:flex;flex-direction:column;gap:16px";
+  initEditors();
+}
+
+var PLAY_START = "# Type any Python here, then press Run\n\nname = \"Moh\"\nfor i in range(3):\n    print(f\"Hello {name}, line {i + 1}\")\n";
+function playgroundView(){
+  var code = state.code.playground != null ? state.code.playground : PLAY_START;
+  var h = '<a class="back" href="#home">← All lessons</a>';
+  h += '<div class="lesson-head"><span class="num">Scratchpad</span><h1>Playground</h1><p class="cx">Try out anything you like. Your code here is saved too.</p></div>';
+  h += '<article class="prob play" data-id="playground">';
+  h += '<textarea class="code" id="code-playground" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Playground code">' + esc(code) + '</textarea>';
+  h += '<div class="btns"><button class="btn primary" data-act="run">Run</button><button class="btn" data-act="clear">Clear</button></div>';
+  h += '<div class="panel out" data-slot="out" hidden></div>';
+  h += '</article>';
+  view.innerHTML = h;
+  view.style.cssText = "display:flex;flex-direction:column;gap:16px";
+  initEditors();
+}
+
+var shown = null;
+function render(){
+  var m = /^#(basics|lesson)-(\d+)$/.exec(location.hash || ""), L = null;
+  if (m){ var T = m[1] === "basics" ? TRACKS[0] : TRACKS[1]; L = T.lessons[Number(m[2]) - 1] || null; }
+  var play = location.hash === "#playground";
+  var key = play ? "playground" : L ? L.slug : "home";
+  if (play) playgroundView(); else if (L) lessonView(L); else homeView();
+  if (shown !== key){ window.scrollTo(0, 0); shown = key; }
+}
+window.addEventListener("hashchange", render);
+
+/* ---------- running Python ---------- */
+var PY = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+var worker = null, workerReady = null;
+function startWorker(){
+  var src = [
+    "var HARNESS = " + JSON.stringify(HARNESS) + ";",
+    "var ready = null;",
+    "try { importScripts('" + PY + "pyodide.js'); ready = loadPyodide({indexURL:'" + PY + "'}); }",
+    "catch (e) { postMessage({loadError:String(e)}); }",
+    "if (ready) ready.then(function(){ postMessage({ready:true}); }, function(e){ postMessage({loadError:String(e)}); });",
+    "onmessage = async function(e){",
+    "  var out = [];",
+    "  try {",
+    "    var py = await ready;",
+    "    py.setStdout({batched:function(s){ out.push(s); }});",
+    "    py.setStderr({batched:function(s){ out.push(s); }});",
+    "    var g = py.globals.get('dict')();",
+    "    if (e.data.tests) {",
+    "      g.set('__user', e.data.code); g.set('__prelude', e.data.prelude || ''); g.set('__tests', e.data.tests);",
+    "      py.runPython(HARNESS, {globals:g});",
+    "      postMessage({done:true, ok:true, check:g.get('__result')});",
+    "      return;",
+    "    }",
+    "    if (e.data.prelude) py.runPython(e.data.prelude, {globals:g});",
+    "    py.runPython(e.data.code, {globals:g});",
+    "    postMessage({done:true, ok:true, out:out.join('\\n')});",
+    "  } catch (err) {",
+    "    postMessage({done:true, ok:false, out:out.join('\\n'), err:String((err && err.message) || err)});",
+    "  }",
+    "};"
+  ].join("\n");
+  var w = new Worker(URL.createObjectURL(new Blob([src], {type:"text/javascript"})));
+  worker = w;
+  workerReady = new Promise(function(res, rej){
+    var t = setTimeout(function(){ rej(new Error("timeout")); }, 90000);
+    function onMsg(e){
+      if (e.data && e.data.ready){ clearTimeout(t); w.removeEventListener("message", onMsg); res(); }
+      else if (e.data && e.data.loadError){ clearTimeout(t); rej(new Error(e.data.loadError)); }
+    }
+    w.addEventListener("message", onMsg);
+    w.addEventListener("error", function(){ clearTimeout(t); rej(new Error("worker")); });
+  });
+  workerReady.catch(function(){ try { w.terminate(); } catch (e) {} if (worker === w){ worker = null; workerReady = null; } });
+}
+function runPython(prelude, code, tests){
+  if (!worker){ try { startWorker(); } catch (e) { return Promise.reject(e); } }
+  var w = worker;
+  return workerReady.then(function(){
+    return new Promise(function(res){
+      var t = setTimeout(function(){
+        try { w.terminate(); } catch (e) {}
+        if (worker === w){ worker = null; workerReady = null; }
+        res({ok:false, out:"", err:"Stopped after 10 seconds. Check for a loop that never ends."});
+      }, 10000);
+      w.onmessage = function(e){ if (e.data && e.data.done){ clearTimeout(t); res(e.data); } };
+      w.postMessage({prelude:prelude || "", code:code, tests:tests || null});
+    });
+  });
+}
+function tidyError(s){
+  var i = s.indexOf('  File "<exec>"');
+  return i >= 0 ? "Traceback (most recent call last):\n" + s.slice(i) : s;
+}
+
+/* ---------- asking Claude ---------- */
+function renderAnswer(el, label, text){
+  el.innerHTML = "";
+  var l = document.createElement("span"); l.className = "lbl"; l.textContent = label; el.appendChild(l);
+  String(text).split("```").forEach(function(part, i){
+    if (!part.trim()) return;
+    if (i % 2){
+      var pre = document.createElement("pre"); pre.textContent = part.replace(/^[a-zA-Z]*\n/, "").replace(/\s+$/, ""); el.appendChild(pre);
+    } else {
+      var d = document.createElement("div"); d.className = "txt"; d.textContent = part.trim(); el.appendChild(d);
+    }
+  });
+}
+function ask(kind, p, code, el, btn){
+  var label = kind === "hint" ? "Hint from Claude" : "Review from Claude";
+  var basics = p.lesson.track.key === "basics";
+  var prompt = "You are a patient, encouraging Python tutor. " +
+    (basics ? "The learner is a beginner working through the lesson \"" + p.lesson.title + "\". Use simple words and an everyday comparison where it helps.\n"
+            : "The learner is practising for LeetCode.\n") +
+    "Exercise: " + (p.lc ? "LeetCode " + p.lc + ", " : "") + p.title + ". " + p.text + "\n\n" +
+    "The learner's current code:\n```python\n" + code + "\n```\n\n";
+  if (kind === "hint"){
+    prompt += "They have already seen this hint: " + p.hint + "\nGive ONE further hint in at most three sentences that moves them a single step forward from where their code is now. Do not write the solution and do not write code. Plain text only.";
+  } else {
+    prompt += "Review this attempt in under 250 words, in plain text with no markdown headings or bold.\n" +
+      "1. Say whether it is correct. If not, give one small input where it fails and say why.\n" +
+      "2. " + (basics ? "Point out one thing they did well." : "Give its time and space complexity.") + "\n" +
+      "3. If it is correct or nearly correct, show a cleaner version in a ```python code block and say what changed. If it is far from working, do not give the solution; give the next step to try instead.";
+  }
+  el.hidden = false; renderAnswer(el, label, "Thinking…");
+  btn.disabled = true;
+  sample(prompt, {cache:false, onText:function(m){ if (m && m.text) renderAnswer(el, label, m.text); }}).then(function(r){
+    renderAnswer(el, label, (r && r.text) || "No answer came back. Try again in a moment.");
+  }, function(err){
+    var msg = err && err.code === "rate_limited" ? "Claude is busy right now. Wait a minute and try again." : "Could not reach Claude from this page. Paste your code into your chat with Claude instead.";
+    renderAnswer(el, label, (err && err.text) ? err.text : msg);
+  }).then(function(){ btn.disabled = false; });
+}
+
+function showResults(el, results, error, output){
+  el.innerHTML = "";
+  function add(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; el.appendChild(n); return n; }
+  var passed = false;
+  if (error){
+    el.className = "panel results fail";
+    add("div", "rhead", "Your code stopped with an error");
+    add("pre", "", error);
+    add("p", "cx", "Read the last line first: it names the problem. The line number tells you where.");
+  } else {
+    var n = results.filter(function(x){ return x.ok; }).length;
+    passed = n === results.length;
+    el.className = "panel results " + (passed ? "pass" : "fail");
+    add("div", "rhead", passed ? "All " + n + " tests passed. Nicely done." : n + " of " + results.length + " tests passed");
+    var list = add("ul", "tests");
+    results.forEach(function(t){
+      var li = document.createElement("li"); li.className = t.ok ? "ok" : "no";
+      var mark = document.createElement("span"); mark.className = "mark"; mark.textContent = t.ok ? "✓" : "✗"; li.appendChild(mark);
+      var body = document.createElement("span");
+      var lab = document.createElement("code"); lab.textContent = t.label; body.appendChild(lab);
+      if (!t.ok){
+        var d = document.createElement("span"); d.className = "diff";
+        d.textContent = "Expected " + t.want + ", got " + t.got; body.appendChild(d);
+      }
+      li.appendChild(body); list.appendChild(li);
+    });
+    if (passed) add("p", "cx", "Marked as solved. Want a cleaner or faster version? Try Review my code, or paste it into your chat with Claude.");
+  }
+  if (output && output.trim()){
+    var det = add("details", "");
+    var sm = document.createElement("summary"); sm.textContent = "What your code printed"; det.appendChild(sm);
+    var pre = document.createElement("pre"); pre.textContent = output.length > 3000 ? output.slice(0, 3000) + "\n…" : output; det.appendChild(pre);
+  }
+  return passed;
+}
+
+/* ---------- events ---------- */
+view.addEventListener("click", function(ev){
+  var btn = ev.target.closest("button[data-act]"); if (!btn) return;
+  var card = btn.closest(".prob"), id = card.getAttribute("data-id"), p = byId(id);
+  var code = getCode(id), act = btn.getAttribute("data-act");
+  var out = card.querySelector('[data-slot="out"]'), hint = card.querySelector('[data-slot="hint"]'), review = card.querySelector('[data-slot="review"]'), chk = card.querySelector('[data-slot="check"]');
+  if (act === "clear"){ setCode(id, ""); if (editors[id]) editors[id].focus(); out.hidden = true; return; }
+  if (act === "check"){
+    var tests = TESTS[id];
+    chk.hidden = false; chk.className = "panel results"; out.hidden = true;
+    chk.textContent = worker ? "Checking…" : "Loading Python. The first check takes a few seconds…";
+    btn.disabled = true;
+    runPython(p.lesson.prelude, code, JSON.stringify(tests)).then(function(r){
+      if (!r.ok || !r.check){ showResults(chk, null, r.err || "Something went wrong.", ""); return; }
+      var res = JSON.parse(r.check);
+      var passed = showResults(chk, res.results, res.error, res.out);
+      if (passed && !isDone(p)){
+        state.status[id] = "done"; save();
+        card.classList.add("done");
+        var db = card.querySelector('button[data-act="done"]'); db.classList.add("solved"); db.textContent = "Solved ✓";
+      }
+    }, function(){
+      showResults(chk, null, "Python could not load right now. Check your connection and try again.", "");
+    }).then(function(){ btn.disabled = false; });
+    return;
+  }
+  if (act === "run"){
+    out.hidden = false; out.className = "panel out";
+    out.textContent = worker ? "Running…" : "Loading Python. The first run takes a few seconds…";
+    btn.disabled = true;
+    runPython(p ? p.lesson.prelude : "", code).then(function(r){
+      var text = r.out || "";
+      if (!r.ok){ text += (text ? "\n" : "") + tidyError(r.err || "Error"); out.className = "panel out err"; }
+      else if (!text) text = "Ran with no output. Add a print(...) line to see a result.";
+      out.textContent = text.length > 4000 ? text.slice(0, 4000) + "\n… output cut" : text;
+    }, function(){
+      out.className = "panel out err";
+      out.textContent = "Python could not load right now. Check your connection and tap Run again.";
+    }).then(function(){ btn.disabled = false; });
+  } else if (act === "hint"){
+    if (hint.hidden || !sample){
+      hint.hidden = false; renderAnswer(hint, "Hint", p.hint);
+      if (sample) btn.textContent = "Another hint";
+    } else {
+      ask("hint", p, code, hint, btn);
+    }
+  } else if (act === "review"){
+    if (code.trim() === p.starter.trim() || code.trim().length < 20){
+      review.hidden = false; renderAnswer(review, "Review", "Write your own attempt first. Even a broken one is worth reviewing.");
+      return;
+    }
+    if (sample) ask("review", p, code, review, btn);
+  } else if (act === "done"){
+    if (isDone(p)) delete state.status[id]; else state.status[id] = "done";
+    save();
+    card.classList.toggle("done", isDone(p));
+    btn.classList.toggle("solved", isDone(p));
+    btn.textContent = isDone(p) ? "Solved ✓" : "Mark solved";
+  } else if (act === "reset"){
+    if (btn.getAttribute("data-sure")){
+      setCode(id, p.starter); delete state.code[id]; save();
+      btn.removeAttribute("data-sure"); btn.textContent = "Reset";
+    } else {
+      btn.setAttribute("data-sure", "1"); btn.textContent = "Tap again to clear your code";
+      setTimeout(function(){ btn.removeAttribute("data-sure"); btn.textContent = "Reset"; }, 4000);
+    }
+  }
+});
+view.addEventListener("input", function(ev){
+  var ta = ev.target;
+  if (!ta.classList || !ta.classList.contains("code")) return;
+  codeChanged(ta.id.slice(5), ta.value);
+});
+view.addEventListener("change", function(ev){
+  var m = /^read-(b?\d+)$/.exec(ev.target.id || ""); if (!m) return;
+  if (ev.target.checked) state.read[m[1]] = 1; else delete state.read[m[1]];
+  save();
+});
+view.addEventListener("keydown", function(ev){
+  var ta = ev.target;
+  if (!ta.classList || !ta.classList.contains("code")) return;
+  var s = ta.selectionStart, e = ta.selectionEnd, v = ta.value, ins = null;
+  if (ev.key === "Tab" && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey) ins = "    ";
+  else if (ev.key === "Enter" && !ev.isComposing){
+    var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s);
+    var indent = (/^[ \t]*/.exec(line) || [""])[0];
+    if (/:\s*$/.test(line)) indent += "    ";
+    ins = "\n" + indent;
+  }
+  if (ins === null) return;
+  ev.preventDefault();
+  ta.value = v.slice(0, s) + ins + v.slice(e);
+  ta.selectionStart = ta.selectionEnd = s + ins.length;
+  ta.dispatchEvent(new Event("input", {bubbles:true}));
+});
+
+if ("serviceWorker" in navigator && /github\.io$|^localhost$/.test(location.hostname)){
+  try { navigator.serviceWorker.register("sw.js").catch(function(){}); } catch (e) {}
+}
+render();
+})();
+</script>
+</body>
+</html>
