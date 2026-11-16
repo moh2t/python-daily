@@ -1405,6 +1405,25 @@ print((2 + 3) * 4)  # 20, brackets first`,
     { d:"M", title:"Order of operations", text:"Print the result of 3 + 4 * 2, then the result of (3 + 4) * 2. Add a comment explaining why they are different.",
       hint:"Multiplication happens before addition unless brackets say otherwise.",
       starter:`# Print both results here
+` },
+    { d:"E", title:"Calculator", text:"Using 3 and 4, print the sum, the difference (3 - 4), the product, the division, the remainder (3 % 4), 3 to the power of 4, and the floor division (3 // 4), one per line.",
+      hint:"Python's operators are + - * / % ** and //.",
+      starter:`# print the seven results for 3 and 4
+` },
+    { d:"E", title:"What type is it?", text:"Print the type of every value in the list, one per line, using type().",
+      hint:"Loop over the list, or call print(type(...)) once for each value.",
+      starter:`values = [10, 9.8, 4 - 4j, "Python", True, [1, 2], {"a": 1}]
+# print the type of each value
+` },
+    { d:"E", title:"One of each", text:"Make one variable of each type: an int called whole, a float called decimal, a complex number called comp, a string called word, a boolean called flag, a list called items, a tuple called pair, a set called unique and a dictionary called info.",
+      hint:"A complex number looks like 2 + 3j. A set uses curly brackets without colons, like {1, 2}.",
+      starter:`# make the nine variables
+` },
+    { d:"M", title:"Distance between points", text:"Work out the straight-line (Euclidean) distance between the points (2, 3) and (10, 8). Store it in distance and print it rounded to 2 decimal places (9.43).",
+      hint:"Distance is the square root of (x2 - x1) squared plus (y2 - y1) squared. A square root is the same as ** 0.5.",
+      starter:`x1, y1 = 2, 3
+x2, y2 = 10, 8
+# work out distance, then print it rounded
 ` }
   ]},
 
@@ -1438,6 +1457,28 @@ last_name = "Lovelace"
       starter:`price = "4.50"
 quantity = 3
 # print the total cost
+` },
+    { d:"E", title:"Number crunch", text:"With num_one = 5 and num_two = 4, make total, diff (num_one - num_two), product, division (num_one / num_two), remainder (num_two % num_one), exp (num_one to the power of num_two) and floor_division (num_one // num_two).",
+      hint:"Each one is a single line, like total = num_one + num_two.",
+      starter:`num_one = 5
+num_two = 4
+# make the seven variables
+` },
+    { d:"E", title:"Circle sizes", text:"A circle has a radius of 30 metres. Using pi = 3.14, store its area in area_of_circle (2826) and its circumference in circum_of_circle (188.4).",
+      hint:"Area is pi * r * r. Circumference is 2 * pi * r.",
+      starter:`radius = 30
+pi = 3.14
+# work out the area and circumference
+` },
+    { d:"E", title:"Compare names", text:"Print the length of the first name, the length of the last name, and whether the first name is longer than the last name.",
+      hint:"len() gives the length. A comparison like a > b gives True or False.",
+      starter:`first_name = "Ada"
+last_name = "Lovelace"
+# print the two lengths, then the comparison
+` },
+    { d:"M", title:"All on one line", text:"In a single line, set first_name to \"Ada\", last_name to \"Lovelace\", country to \"England\" and age to 36. Then print: Ada Lovelace from England is 36",
+      hint:"Python lets you write a, b = 1, 2. print can take several values separated by commas.",
+      starter:`# set the four variables on one line, then print the sentence
 ` }
   ]},
 
@@ -1477,6 +1518,29 @@ height = 5
       hint:"// 60 gives the whole hours. % 60 gives the minutes left over.",
       starter:`minutes = 135
 # print "2 hours 15 minutes"
+` },
+    { d:"E", title:"Triangle maths", text:"A triangle has a base of 10 and a height of 6. Store its area in triangle_area (0.5 x base x height). Its sides are 3, 4 and 5 in another triangle: store that one's perimeter in perimeter.",
+      hint:"The perimeter is the three sides added together.",
+      starter:`base, height = 10, 6
+a, b, c = 3, 4, 5
+# work out triangle_area and perimeter
+` },
+    { d:"E", title:"Weekly pay", text:"Someone works 40 hours at 28 per hour. Store their pay in pay and print: Your weekly earning is 1120",
+      hint:"Multiply hours by rate.",
+      starter:`hours = 40
+rate = 28
+# work out pay and print the sentence
+` },
+    { d:"M", title:"Slope and distance", text:"For the points (2, 2) and (6, 10), store the slope in slope ((y2 - y1) / (x2 - x1)) and the distance between them in distance. Then store in same_slope whether this slope equals the slope of the line y = 2x - 2, which is 2.",
+      hint:"Distance is ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5. Use == to compare.",
+      starter:`x1, y1 = 2, 2
+x2, y2 = 6, 10
+# work out slope, distance and same_slope
+` },
+    { d:"M", title:"True or false", text:"Store the answer to each question as True or False: different_length (do \"python\" and \"dragon\" have different lengths?), both_have_on (is \"on\" in both words?), has_jargon (is \"jargon\" in the sentence?), floor_matches (is 7 // 3 equal to int(2.7)?), same_type (is the type of '10' the same as the type of 10?) and seven_is_even (is 7 even?).",
+      hint:"Use != for different, in for contains, and to join two checks, and % 2 == 0 for even.",
+      starter:`sentence = "I hope this course is not full of jargon"
+# work out the six answers using comparisons
 ` }
   ]},
 
@@ -1510,6 +1574,29 @@ print(f"{name.title()} is {age}")   # Ada Lovelace is 36`,
       hint:"split() gives a list of words. len() counts them, and max(words, key=len) finds the longest.",
       starter:`sentence = "I am learning Python to solve problems confidently"
 # print the number of words, then the longest word
+` },
+    { d:"E", title:"Join and change case", text:"Join the words into sentence, with spaces: Thirty Days Of Python. Then print company in upper case, in lower case, and with the case of every letter swapped.",
+      hint:"\" \".join(words) joins with spaces. Strings have upper(), lower() and swapcase().",
+      starter:`words = ["Thirty", "Days", "Of", "Python"]
+company = "Coding For All"
+# make sentence, then print the three versions of company
+` },
+    { d:"E", title:"Acronyms", text:"Make the acronym of each name from its first letters: store \"PFE\" for Python For Everyone in pfe, and \"CFA\" for Coding For All in cfa. Work them out with code instead of typing them.",
+      hint:"split() gives the words. Each word's first letter is word[0]. You can add letters together with +.",
+      starter:`name_one = "Python For Everyone"
+name_two = "Coding For All"
+# work out pfe and cfa
+` },
+    { d:"M", title:"Because because because", text:"In the sentence, store where \"because\" first appears in first, where it last appears in last, and slice out the phrase \"because because because\" into phrase.",
+      hint:"find gives the first position and rfind the last. The phrase runs from first to last + len(\"because\").",
+      starter:`sentence = "You cannot end a sentence with because because because is a conjunction"
+# work out first, last and phrase
+` },
+    { d:"M", title:"Formatting", text:"Print: The area of a circle with radius 10 is 314 metres square. (use pi = 3.14 and show the area as a whole number). Then join the libraries into libs with a hash and a space between them: Django# Flask# Bottle# Pyramid# Falcon",
+      hint:"An f-string like f\"... {radius} ...\" puts values into text. int() drops the decimal part.",
+      starter:`radius = 10
+libraries = ["Django", "Flask", "Bottle", "Pyramid", "Falcon"]
+# print the sentence, then make libs
 ` }
   ]},
 
@@ -1541,6 +1628,27 @@ print(nums, sum(nums), max(nums))       # [1, 2, 5, 9] 17 9`,
       hint:"Sort first. With 10 items, the middle two sit at positions 4 and 5.",
       starter:`ages = [19, 22, 19, 24, 20, 25, 26, 24, 25, 24]
 # print min, max, average, median
+` },
+    { d:"E", title:"First, middle, last", text:"Store the first company in first, the middle one in middle, the last one in last, and how many there are in count.",
+      hint:"The middle position is len(it_companies) // 2. The last item is at -1.",
+      starter:`it_companies = ["Facebook", "Google", "Microsoft", "Apple", "IBM", "Oracle", "Amazon"]
+# work out first, middle, last and count
+` },
+    { d:"M", title:"Company makeover", text:"Add \"Twitter\" to the end of the list and insert \"Netflix\" in the middle. Sort the list. Then store the first three companies in first3, the last three in last3, and all of them joined with \"#; \" in joined.",
+      hint:"append, insert(len(...) // 2, ...), sort(), then slices [:3] and [-3:].",
+      starter:`it_companies = ["Facebook", "Google", "Microsoft", "Apple", "IBM", "Oracle", "Amazon"]
+# change the list, then make first3, last3 and joined
+` },
+    { d:"M", title:"Full stack", text:"Join the two lists into full_stack, then insert \"Python\" and \"SQL\" straight after \"Redux\".",
+      hint:"+ joins lists. full_stack.index(\"Redux\") tells you where Redux is.",
+      starter:`front_end = ["HTML", "CSS", "JS", "React", "Redux"]
+back_end = ["Node", "Express", "MongoDB"]
+# make full_stack
+` },
+    { d:"M", title:"Split and unpack", text:"Split countries into first_half and second_half. With an odd count, the first half gets the extra one. Then unpack countries so the first three go into china, russia and usa, and the rest into a list called nordic.",
+      hint:"(len(countries) + 1) // 2 is where the split goes. A star before a name, like *nordic, collects the rest.",
+      starter:`countries = ["China", "Russia", "USA", "Finland", "Sweden", "Norway", "Denmark"]
+# make first_half and second_half, then unpack
 ` }
   ]},
 
@@ -1575,6 +1683,29 @@ print(len(person), "Ada" in person)   # 3 True`,
       starter:`siblings = ("Tunde", "Kemi")
 parents = ("Mum", "Dad")
 # make family, print its size and whether "Mum" is in it
+` },
+    { d:"E", title:"Siblings", text:"Join sisters and brothers into siblings (sisters first). Then add the parents to make family_members: siblings followed by \"Dad\" and \"Mum\".",
+      hint:"+ joins tuples. A tuple with one item needs a comma, like (\"Tobi\",).",
+      starter:`sisters = ("Amina", "Zara")
+brothers = ("Tobi",)
+# make siblings and family_members
+` },
+    { d:"E", title:"In the tuple?", text:"Store in has_estonia whether \"Estonia\" is in the tuple, and in has_iceland whether \"Iceland\" is.",
+      hint:"Use the in operator.",
+      starter:`nordic_countries = ("Denmark", "Finland", "Iceland", "Norway", "Sweden")
+# work out has_estonia and has_iceland
+` },
+    { d:"M", title:"Unpack the family", text:"Unpack family_members in one line so the children go into a list called kids, and the last two go into dad and mum.",
+      hint:"A starred name collects everything that is left over: *kids, dad, mum = ...",
+      starter:`family_members = ("Amina", "Zara", "Tobi", "Dad", "Mum")
+# unpack into kids, dad and mum
+` },
+    { d:"M", title:"Food stuff", text:"Join the three tuples into food_stuff_tp. Turn it into a list called food_stuff_lt. Then store the middle item in middle, and the first three and last three items in first3 and last3.",
+      hint:"list() turns a tuple into a list. With 7 items, the middle is at position 3.",
+      starter:`fruits = ("apple", "mango")
+vegetables = ("carrot", "kale", "leek")
+animal_products = ("milk", "egg")
+# make food_stuff_tp, food_stuff_lt, middle, first3 and last3
 ` }
   ]},
 
@@ -1609,6 +1740,27 @@ print(a - b)                 # {'sql'}`,
       starter:`you = {"python", "sql", "excel"}
 friend = {"python", "java", "sql"}
 # print shared, all, only yours
+` },
+    { d:"E", title:"Company set", text:"Add \"Twitter\" to the set, add \"Netflix\" and \"Spotify\" in one go, remove \"IBM\", and use discard to remove \"Yahoo\" (which is not there, so nothing should break).",
+      hint:"add for one item, update for several. remove fails on a missing item, but discard does not.",
+      starter:`it_companies = {"Facebook", "Google", "Microsoft", "Apple", "IBM", "Oracle", "Amazon"}
+# change the set
+` },
+    { d:"E", title:"Unique words", text:"Store in unique_count how many different words the sentence uses.",
+      hint:"split() the sentence into words, then turn the list into a set.",
+      starter:`sentence = "I am a teacher and I love to inspire and teach people"
+# work out unique_count
+` },
+    { d:"M", title:"A and B", text:"For the two sets, store their union in union, their intersection in inter, whether A is a subset of B in a_subset_b, whether they share nothing in disjoint, and their symmetric difference in sym_diff.",
+      hint:"Sets have union, intersection, issubset, isdisjoint and symmetric_difference.",
+      starter:`A = {19, 22, 24, 20, 25, 26}
+B = {19, 22, 20, 25, 26, 24, 28, 27}
+# work out the five answers
+` },
+    { d:"M", title:"List or set?", text:"Turn ages into a set called age_set. Store in list_longer whether the list has more items than the set, and in repeats how many items were dropped as repeats.",
+      hint:"len() works on both. The difference in length is the number of repeats.",
+      starter:`ages = [22, 19, 24, 25, 26, 24, 25, 24]
+# make age_set, list_longer and repeats
 ` }
   ]},
 
@@ -1640,6 +1792,37 @@ print("Cy" in phone)              # True`,
       hint:"Use contacts[key] = value to add or change, del to delete, and get(key, default) to look up safely.",
       starter:`contacts = {"Ada": "0712", "Bo": "0788"}
 # make the changes, then print
+` },
+    { d:"E", title:"Dog", text:"Start with an empty dictionary called dog, then add the keys name, color, breed, legs and age with any values you like (legs should be 4).",
+      hint:"dog = {} makes it empty. dog[\"name\"] = \"Rex\" adds a key.",
+      starter:`# make the dog dictionary
+` },
+    { d:"E", title:"Nested lookup", text:"Store the city from the address in city, the first skill in first_skill, and whether skills is a list in skills_is_list.",
+      hint:"Chain the lookups: person[\"address\"][\"city\"]. type(x) == list checks for a list.",
+      starter:`person = {
+    "name": "Ada",
+    "address": {"city": "London", "postcode": "NW1"},
+    "skills": ["maths", "python"],
+}
+# work out city, first_skill and skills_is_list
+` },
+    { d:"M", title:"Student record", text:"Add \"Python\" and \"SQL\" to the student's skills and delete the address. Then store the keys as a list in keys_list, the values as a list in values_list, and the pairs as a list of tuples in pairs.",
+      hint:"skills is a list, so use extend or append. del removes a key. keys(), values() and items() give the parts; wrap them in list().",
+      starter:`student = {
+    "first_name": "Ada",
+    "last_name": "Lovelace",
+    "age": 36,
+    "country": "England",
+    "address": "12 Main Street",
+    "skills": ["HTML"],
+}
+# update student, then make keys_list, values_list and pairs
+` },
+    { d:"M", title:"Price list", text:"Update prices with the new prices in more (apple's price changes and milk is added). Then store the cost of one apple and one milk in total, and the price of rice in rice_price, using get so a missing item gives 0.",
+      hint:"prices.update(more) merges them. prices.get(\"rice\", 0) gives 0 when rice is missing.",
+      starter:`prices = {"apple": 0.5, "bread": 2.0}
+more = {"milk": 1.2, "apple": 0.6}
+# update prices, then work out total and rice_price
 ` }
   ]},
 
@@ -1677,6 +1860,28 @@ print(label)              # adult`,
       hint:"(year % 4 == 0 and year % 100 != 0) or year % 400 == 0.",
       starter:`year = 2024
 # print True or False, then try 1900 and 2000
+` },
+    { d:"E", title:"Old enough to drive", text:"If age is 18 or more, print: You are old enough to learn to drive. Otherwise print how many years are left, like: You need 3 more years to learn to drive.",
+      hint:"if age >= 18: ... else: ... and work out 18 - age for the years left.",
+      starter:`age = 15
+# print the right message
+` },
+    { d:"E", title:"Who is older?", text:"Compare my_age and your_age. Print who is older and by how much, like: I am 5 years older than you. Use \"year\" instead of \"years\" for a gap of 1, and print We are the same age if they match.",
+      hint:"Work out the gap first, then use if, elif and else.",
+      starter:`my_age = 30
+your_age = 25
+# print who is older
+` },
+    { d:"M", title:"Season", text:"Set season from month: September, October and November are Autumn; December, January and February are Winter; March, April and May are Spring; June, July and August are Summer.",
+      hint:"Check with in: if month in [\"September\", \"October\", \"November\"]: ...",
+      starter:`month = "October"
+# set season
+` },
+    { d:"M", title:"Add a fruit", text:"If new_fruit is not already in fruits, add it to the end and print the list. If it is already there, print: That fruit already exists in the list",
+      hint:"if new_fruit not in fruits: ...",
+      starter:`fruits = ["banana", "orange", "mango", "lemon"]
+new_fruit = "apple"
+# add it if it is new
 ` }
   ]},
 
@@ -1715,6 +1920,24 @@ for n in range(10):
     { d:"M", title:"Triangle", text:"Print this triangle of 7 rows: # on the first row, ## on the second, up to ####### on the last.",
       hint:"\"#\" * 3 gives ###. Loop from 1 to 7.",
       starter:`# print the triangle
+` },
+    { d:"E", title:"Count down", text:"Use a while loop to print the numbers from 10 down to 0, one per line.",
+      hint:"Start at 10, print, subtract 1, and keep going while the number is 0 or more.",
+      starter:`# count down from 10 to 0 with while
+` },
+    { d:"E", title:"Squares table", text:"Print a line for each number from 0 to 10 showing it squared, in the form 3 x 3 = 9.",
+      hint:"for i in range(11): print(f\"{i} x {i} = {i * i}\")",
+      starter:`# print the squares table
+` },
+    { d:"M", title:"Reverse with a loop", text:"Build reversed_fruits, the fruits in reverse order, using a loop. Do not use reverse(), reversed() or slicing.",
+      hint:"Start with an empty list and insert each fruit at position 0.",
+      starter:`fruits = ["banana", "orange", "mango", "lemon"]
+reversed_fruits = []
+# fill reversed_fruits with a loop
+` },
+    { d:"M", title:"Grid", text:"Use nested loops to print an 8 by 8 grid of # signs with a space between them, so every row is: # # # # # # # #",
+      hint:"The outer loop runs once per row. The inner loop builds a row, then you print it.",
+      starter:`# print the 8 by 8 grid with nested loops
 ` }
   ]},
 
@@ -1749,7 +1972,27 @@ print(celsius_to_fahrenheit(100))` },
       starter:`def is_prime(n):
     pass
 
-print(is_prime(2), is_prime(15), is_prime(17), is_prime(1))   # True False True False` }
+print(is_prime(2), is_prime(15), is_prime(17), is_prime(1))   # True False True False` },
+    { d:"E", title:"Add them all", text:"Write add_all_nums, which takes any number of numbers and returns their sum. With no numbers it returns 0.",
+      hint:"def add_all_nums(*nums): collects every argument into a tuple.",
+      starter:`# write add_all_nums
+` },
+    { d:"E", title:"Greet with a default", text:"Write greet(name=\"Guest\"), which returns \"Hello, \" followed by the name, so greet() returns \"Hello, Guest\".",
+      hint:"A default value goes in the brackets: def greet(name=\"Guest\"):",
+      starter:`# write greet
+` },
+    { d:"E", title:"Factorial", text:"Write factorial(n), which returns 1 x 2 x ... x n. factorial(0) is 1.",
+      hint:"Start with result = 1 and multiply by each number from 1 to n.",
+      starter:`# write factorial
+` },
+    { d:"M", title:"Season function", text:"Write check_season(month), which returns \"Autumn\", \"Winter\", \"Spring\" or \"Summer\" for a month name.",
+      hint:"Same idea as the Season exercise in Conditionals, but return the answer.",
+      starter:`# write check_season
+` },
+    { d:"H", title:"Quadratic", text:"Write solve_quadratic(a, b, c), which returns the real solutions of ax² + bx + c = 0 as a sorted list: two solutions, one when they are the same, or an empty list when there are none.",
+      hint:"Work out d = b * b - 4 * a * c. If d < 0 there are none. Otherwise the solutions are (-b ± d ** 0.5) / (2 * a).",
+      starter:`# write solve_quadratic
+` }
   ]},
 
 { title:"Modules", blurb:"Using ready-made toolboxes with import", src:["12_Day_Modules/12_modules.md"],
@@ -1785,7 +2028,27 @@ import string
 def random_id():
     pass
 
-print(random_id())` }
+print(random_id())` },
+    { d:"E", title:"Random RGB", text:"Write rgb_color_gen(), which returns a colour as text like rgb(12,200,99): three random numbers from 0 to 255.",
+      hint:"random.randint(0, 255) gives one number. Put them in an f-string.",
+      starter:`import random
+# write rgb_color_gen
+` },
+    { d:"M", title:"Hex colours", text:"Write list_of_hexa_colors(n), which returns a list of n random colours, each a # followed by six characters from 0-9 and a-f, like #a3e12f.",
+      hint:"random.choice(\"0123456789abcdef\") picks one character. Repeat it six times per colour.",
+      starter:`import random
+# write list_of_hexa_colors
+` },
+    { d:"M", title:"Shuffle", text:"Write shuffle_list(items), which returns a shuffled copy of the list and leaves the original as it was.",
+      hint:"Copy first with items.copy(), then use random.shuffle on the copy.",
+      starter:`import random
+# write shuffle_list
+` },
+    { d:"M", title:"Seven unique digits", text:"Write seven_unique(), which returns a list of seven different random numbers from 0 to 9.",
+      hint:"random.sample(range(10), 7) picks without repeats.",
+      starter:`import random
+# write seven_unique
+` }
   ]},
 
 { title:"List comprehension", blurb:"Building lists in a single readable line", src:["13_Day_List_comprehension/13_list_comprehension.md"],
@@ -1818,6 +2081,25 @@ print(double(5))                    # 10`,
       hint:"Write the outer for first (each row), then the inner for (each number in the row).",
       starter:`grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 # print the flat list
+` },
+    { d:"E", title:"Zero and below", text:"With a list comprehension, store the numbers that are zero or negative in non_positive.",
+      hint:"[n for n in numbers if n <= 0]",
+      starter:`numbers = [-4, -3, -2, -1, 0, 2, 4, 6]
+# make non_positive
+` },
+    { d:"M", title:"Deep flatten", text:"The list has lists inside lists. Flatten it into flat, [1, 2, 3, 4, 5, 6, 7, 8, 9], with one list comprehension.",
+      hint:"Use three for parts in one comprehension: for outer in ... for inner in outer for n in inner.",
+      starter:`list_of_lists = [[[1, 2, 3]], [[4, 5, 6]], [[7, 8, 9]]]
+# make flat
+` },
+    { d:"M", title:"Powers table", text:"Build table, a list of tuples for i from 0 to 10, each holding (i, 1, i, i², i³, i⁴, i⁵). The row for 2 is (2, 1, 2, 4, 8, 16, 32).",
+      hint:"[(i, 1, i, i ** 2, i ** 3, i ** 4, i ** 5) for i in range(11)]",
+      starter:`# make table
+` },
+    { d:"M", title:"Countries to dictionaries", text:"Turn countries into records: a list of dictionaries with \"country\" and \"city\" keys, with both names in upper case.",
+      hint:"Each item is a list holding one tuple, so unpack with for [(country, city)] in countries.",
+      starter:`countries = [[("Finland", "Helsinki")], [("Sweden", "Stockholm")], [("Norway", "Oslo")]]
+# make records
 ` }
   ]},
 
@@ -1851,6 +2133,27 @@ print(reduce(lambda a, b: a + b, nums)) # 21`,
       hint:"A key can return a tuple: key=lambda w: (len(w), w).",
       starter:`words = ["pear", "banana", "fig", "kiwi", "apple"]
 # print the sorted list
+` },
+    { d:"E", title:"Squares with map", text:"Use map to store the square of every number in squares.",
+      hint:"list(map(lambda n: n * n, numbers))",
+      starter:`numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# make squares with map
+` },
+    { d:"E", title:"Filter the countries", text:"Use filter to store the countries containing \"land\" in with_land, and the countries starting with E in starts_with_e.",
+      hint:"list(filter(lambda c: \"land\" in c, countries)), and startswith(\"E\") for the second.",
+      starter:`countries = ["Finland", "Iceland", "Estonia", "Ireland", "Sweden", "Poland", "England"]
+# make with_land and starts_with_e with filter
+` },
+    { d:"M", title:"Reduce", text:"Use reduce to store the sum of numbers in total. Then use reduce to join the countries into sentence, as: Estonia, Finland, Sweden, Denmark, Norway, and Iceland",
+      hint:"from functools import reduce. For the sentence, reduce all but the last with \", \", then add \", and \" and the last one.",
+      starter:`from functools import reduce
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+countries = ["Estonia", "Finland", "Sweden", "Denmark", "Norway", "Iceland"]
+# make total and sentence with reduce
+` },
+    { d:"M", title:"Count by first letter", text:"Write count_by_letter(countries), which returns a dictionary from each starting letter to how many countries start with it.",
+      hint:"Loop through, and use counts[c[0]] = counts.get(c[0], 0) + 1.",
+      starter:`# write count_by_letter
 ` }
   ]},
 
@@ -1891,7 +2194,24 @@ print(safe_divide(3, 0))    # None` },
       starter:`def to_numbers(items):
     pass
 
-print(to_numbers(["4", "x", "7", "2.5", ""]))   # [4.0, 7.0, 2.5]` }
+print(to_numbers(["4", "x", "7", "2.5", ""]))   # [4.0, 7.0, 2.5]` },
+    { d:"E", title:"Safe number", text:"Write to_int(text), which returns the text as a whole number, or 0 when it cannot be converted.",
+      hint:"try: return int(text) except ValueError: return 0",
+      starter:`# write to_int
+` },
+    { d:"E", title:"Unpack the countries", text:"Unpack names so the first five go into a list called nordic, and the last two into es and ru.",
+      hint:"*nordic, es, ru = names",
+      starter:`names = ["Finland", "Sweden", "Norway", "Denmark", "Iceland", "Estonia", "Russia"]
+# unpack into nordic, es and ru
+` },
+    { d:"M", title:"Safe lookup", text:"Write get_item(items, i), which returns items[i], or \"out of range\" when there is no item at that position.",
+      hint:"Catch IndexError.",
+      starter:`# write get_item
+` },
+    { d:"M", title:"Error report", text:"Write describe(value), which returns 10 divided by int(value). Return \"not a number\" if value cannot be turned into a number, and \"cannot divide by zero\" if it is 0.",
+      hint:"One try with two except blocks: ValueError and ZeroDivisionError.",
+      starter:`# write describe
+` }
   ]},
 
 { title:"Dates and times", blurb:"Working with dates using the datetime module", src:["16_Day_Python_date_time/16_python_datetime.md"],
@@ -1923,6 +2243,30 @@ print(d.year, d.month)                  # 2026 11`,
       starter:`from datetime import date
 day = date(2026, 1, 5)
 # print the formatted date
+` },
+    { d:"E", title:"Parts of a date", text:"Store the day, month, year, hour and minute of d in day, month, year, hour and minute.",
+      hint:"A datetime has .day, .month, .year, .hour and .minute.",
+      starter:`from datetime import datetime
+d = datetime(2026, 11, 16, 14, 30)
+# work out the five parts
+` },
+    { d:"M", title:"US format", text:"Print d in the format month/day/year, hours:minutes:seconds, which is 11/16/2026, 14:30:00.",
+      hint:"d.strftime(\"%m/%d/%Y, %H:%M:%S\")",
+      starter:`from datetime import datetime
+d = datetime(2026, 11, 16, 14, 30)
+# print the formatted date
+` },
+    { d:"M", title:"Text to date", text:"Turn the text into a datetime called parsed.",
+      hint:"datetime.strptime(text, \"%d %B, %Y\"). %B is the full month name.",
+      starter:`from datetime import datetime
+text = "5 December, 2019"
+# make parsed
+` },
+    { d:"M", title:"Days to new year", text:"Store in days_left how many days there are from today (16 November 2026) to 1 January 2027.",
+      hint:"Subtract two date objects, then use .days.",
+      starter:`from datetime import date
+today = date(2026, 11, 16)
+# work out days_left
 ` }
   ]},
 
@@ -1954,6 +2298,29 @@ text = "I paid 12 pounds for 3 books and 45 pens"
       starter:`import re
 text = "Contact ada@example.com or bob.smith@mail.co.uk today."
 # print the email addresses
+` },
+    { d:"M", title:"Most frequent words", text:"Write most_frequent_words(text, n), which returns the n most common words as (word, count) pairs, most common first. Ignore case and punctuation.",
+      hint:"re.findall(r\"[a-z]+\", text.lower()) gives the words. collections.Counter has most_common(n).",
+      starter:`import re
+text = "Practice makes progress. If you practice a little every day, practice becomes a habit, and a habit makes practice easy."
+# write most_frequent_words
+` },
+    { d:"M", title:"Particles on a line", text:"Pull every number out of the text, including negative ones, into points (as whole numbers). Then store the distance between the two furthest particles in distance.",
+      hint:"The pattern r\"-?\\d+\" allows an optional minus sign. The distance is max minus min.",
+      starter:`import re
+text = "Particles sit at -12, -4, -3 and -1 on the left, 0 at the origin, and 4 and 8 on the right."
+# make points and distance
+` },
+    { d:"M", title:"Valid variable name", text:"Write is_valid_variable(name), which uses a regular expression to check the name starts with a letter or underscore and then has only letters, digits and underscores.",
+      hint:"re.fullmatch(r\"[A-Za-z_][A-Za-z0-9_]*\", name) is not None",
+      starter:`import re
+# write is_valid_variable
+` },
+    { d:"H", title:"Clean the text", text:"Write clean_text(text), which removes the characters % $ @ & # * and ; from the text. Then use it on messy and store the most common word (in lower case) in top_word.",
+      hint:"re.sub(r\"[%$@&#*;]\", \"\", text) removes them. Then count words like in Most frequent words.",
+      starter:`import re
+messy = "He%llo, w@orld! Py$thon is f#un, and Py&thon is p%owerful. Le@arn Py*thon;."
+# write clean_text, then work out top_word
 ` }
   ]},
 
@@ -1989,6 +2356,42 @@ with open("me.json") as f:
       starter:`import json
 profile = {"name": "Ada", "skills": ["python", "sql", "excel"]}
 # save it, load it back, print the second skill
+` },
+    { d:"E", title:"Lines and words", text:"Write count_lines_words(path), which opens a text file and returns a tuple of how many lines and how many words it has.",
+      hint:"Read the file, then len(text.splitlines()) and len(text.split()).",
+      starter:`with open("notes.txt", "w") as f:
+    f.write("Practice a little\\nevery day\\nand keep going\\n")
+# write count_lines_words, then try it on notes.txt
+` },
+    { d:"M", title:"Emails in a file", text:"Write find_emails(path), which reads a file and returns every different email address in it, sorted.",
+      hint:"Read the text, use re.findall with r\"[\\w.]+@[\\w.]+\\w\", then sorted(set(...)).",
+      starter:`import re
+with open("inbox.txt", "w") as f:
+    f.write("From: ada@example.com\\nTo: bo@mail.org\\nCc: ada@example.com, cy.lee@uni.ac.uk\\n")
+# write find_emails
+` },
+    { d:"M", title:"Most spoken languages", text:"The starter saves countries.json. Write most_spoken_languages(path, n), which reads it and returns the n languages spoken in the most countries, as (language, count) pairs, most first.",
+      hint:"json.load reads the file. Count every language with a dictionary or collections.Counter, then sort by count.",
+      starter:`import json
+countries = [
+    {"name": "Canada", "languages": ["English", "French"]},
+    {"name": "France", "languages": ["French"]},
+    {"name": "Belgium", "languages": ["French", "Dutch", "German"]},
+    {"name": "Netherlands", "languages": ["Dutch"]},
+    {"name": "Switzerland", "languages": ["German", "French", "Italian"]},
+    {"name": "United Kingdom", "languages": ["English"]},
+    {"name": "Ireland", "languages": ["English", "Irish"]},
+]
+with open("countries.json", "w") as f:
+    json.dump(countries, f)
+# write most_spoken_languages
+` },
+    { d:"M", title:"Best student", text:"The starter saves scores.csv. Write best_student(path), which reads it with the csv module and returns the name with the highest score.",
+      hint:"csv.DictReader gives each row as a dictionary. Turn the score into an int before comparing.",
+      starter:`import csv
+with open("scores.csv", "w", newline="") as f:
+    f.write("name,score\\nAda,82\\nBo,91\\nCy,77\\n")
+# write best_student
 ` }
   ]},
 
@@ -2056,7 +2459,24 @@ s.push(1)
 s.push(2)
 print(s.peek())      # 2
 print(s.pop())       # 2
-print(s.is_empty())  # False` }
+print(s.is_empty())  # False` },
+    { d:"E", title:"Click counter", text:"Build a ClickCounter class. It starts with value 0, increment() adds 1, and reset() puts it back to 0.",
+      hint:"Set self.value = 0 in __init__.",
+      starter:`# build ClickCounter
+` },
+    { d:"M", title:"Dog is an animal", text:"Build an Animal class that stores a name. Then build Dog, which inherits from Animal and has speak(), returning the name followed by \" says woof\".",
+      hint:"class Dog(Animal): makes Dog inherit Animal's __init__.",
+      starter:`# build Animal and Dog
+` },
+    { d:"M", title:"Statistics class", text:"Build a Statistics class that takes a list of numbers and has count(), sum(), min(), max(), range(), mean(), median() and mode() methods.",
+      hint:"Store the list in __init__. Median: sort, then take the middle (or the average of the two middle values). Mode: the value that appears most often.",
+      starter:`ages = [21, 25, 25, 30, 22, 25, 28, 30, 24, 20]
+# build Statistics
+` },
+    { d:"M", title:"Personal account", text:"Build PersonAccount(first_name, last_name) with add_income(amount, description), add_expense(amount, description), total_income(), total_expense(), balance() (income minus expenses) and account_info(), which returns the full name.",
+      hint:"Keep two lists in __init__, one for incomes and one for expenses, and add (amount, description) to them.",
+      starter:`# build PersonAccount
+` }
   ]}
 ];
 </script>
@@ -2104,6 +2524,83 @@ const TESTS = {
 "b18-2":[["__import__('json').load(open('profile.json'))","{'name': 'Ada', 'skills': ['python', 'sql', 'excel']}","profile.json holds the dictionary"],["'sql' in _out","True","prints sql"]],
 "b19-1":[["Rectangle(8, 5).area()","40"],["Rectangle(8, 5).perimeter()","26"],["Rectangle(2, 3).area()","6"]],
 "b19-2":[["(lambda s: (s.is_empty(), s.push(1), s.push(2), s.peek(), s.pop(), s.pop(), s.is_empty()))(Stack())","(True, None, None, 2, 2, 1, True)","is_empty, push, push, peek, pop, pop, is_empty"]],
+"b1-3":[["[l.strip() for l in _out.strip().splitlines()]", "['7', '-1', '12', '0.75', '3', '81', '0']", "prints 7, -1, 12, 0.75, 3, 81 and 0"]],
+"b1-4":[["all(t in _out for t in ['int', 'float', 'complex', 'str', 'bool', 'list', 'dict'])", "True", "prints all seven types"]],
+"b1-5":[["[type(x).__name__ for x in (whole, decimal, comp, word, flag, items, pair, unique, info)]", "['int', 'float', 'complex', 'str', 'bool', 'list', 'tuple', 'set', 'dict']", "each variable has the right type"]],
+"b1-6":[["round(distance, 2)", "9.43"], ["'9.43' in _out", "True", "prints 9.43"]],
+"b2-3":[["(total, diff, product, division)", "(9, 1, 20, 1.25)"], ["(remainder, exp, floor_division)", "(4, 625, 1)"]],
+"b2-4":[["round(area_of_circle, 2)", "2826.0"], ["round(circum_of_circle, 2)", "188.4"]],
+"b2-5":[["all(s in _out for s in ['3', '8', 'False'])", "True", "prints 3, 8 and False"]],
+"b2-6":[["(first_name, last_name, country, age)", "('Ada', 'Lovelace', 'England', 36)"], ["'Ada Lovelace from England is 36' in _out", "True", "prints the sentence"]],
+"b3-3":[["triangle_area", "30"], ["perimeter", "12"]],
+"b3-4":[["pay", "1120"], ["'Your weekly earning is 1120' in _out", "True", "prints the sentence"]],
+"b3-5":[["slope", "2.0"], ["round(distance, 2)", "8.94"], ["same_slope", "True"]],
+"b3-6":[["(different_length, both_have_on, has_jargon)", "(False, True, True)"], ["(floor_matches, same_type, seven_is_even)", "(True, False, False)"]],
+"b4-3":[["sentence", "'Thirty Days Of Python'"], ["all(s in _out for s in ['CODING FOR ALL', 'coding for all', 'cODING fOR aLL'])", "True", "prints upper, lower and swapped case"]],
+"b4-4":[["pfe", "'PFE'"], ["cfa", "'CFA'"]],
+"b4-5":[["first", "31"], ["last", "47"], ["phrase", "'because because because'"]],
+"b4-6":[["'The area of a circle with radius 10 is 314 metres square.' in _out", "True", "prints the sentence"], ["libs", "'Django# Flask# Bottle# Pyramid# Falcon'"]],
+"b5-3":[["(first, middle, last, count)", "('Facebook', 'Apple', 'Amazon', 7)"]],
+"b5-4":[["it_companies", "['Amazon', 'Apple', 'Facebook', 'Google', 'IBM', 'Microsoft', 'Netflix', 'Oracle', 'Twitter']"], ["(first3, last3)", "(['Amazon', 'Apple', 'Facebook'], ['Netflix', 'Oracle', 'Twitter'])"], ["joined", "'Amazon#; Apple#; Facebook#; Google#; IBM#; Microsoft#; Netflix#; Oracle#; Twitter'"]],
+"b5-5":[["full_stack", "['HTML', 'CSS', 'JS', 'React', 'Redux', 'Python', 'SQL', 'Node', 'Express', 'MongoDB']"]],
+"b5-6":[["(first_half, second_half)", "(['China', 'Russia', 'USA', 'Finland'], ['Sweden', 'Norway', 'Denmark'])"], ["(china, russia, usa, nordic)", "('China', 'Russia', 'USA', ['Finland', 'Sweden', 'Norway', 'Denmark'])"]],
+"b6-3":[["siblings", "('Amina', 'Zara', 'Tobi')"], ["family_members", "('Amina', 'Zara', 'Tobi', 'Dad', 'Mum')"]],
+"b6-4":[["(has_estonia, has_iceland)", "(False, True)"]],
+"b6-5":[["kids", "['Amina', 'Zara', 'Tobi']"], ["(dad, mum)", "('Dad', 'Mum')"]],
+"b6-6":[["food_stuff_tp", "('apple', 'mango', 'carrot', 'kale', 'leek', 'milk', 'egg')"], ["type(food_stuff_lt).__name__", "'list'"], ["(middle, first3, last3)", "('kale', ['apple', 'mango', 'carrot'], ['leek', 'milk', 'egg'])"]],
+"b7-3":[["sorted(it_companies)", "['Amazon', 'Apple', 'Facebook', 'Google', 'Microsoft', 'Netflix', 'Oracle', 'Spotify', 'Twitter']"]],
+"b7-4":[["unique_count", "10"]],
+"b7-5":[["union", "{19, 20, 22, 24, 25, 26, 27, 28}"], ["inter", "{19, 20, 22, 24, 25, 26}"], ["(a_subset_b, disjoint)", "(True, False)"], ["sym_diff", "{27, 28}"]],
+"b7-6":[["age_set", "{19, 22, 24, 25, 26}"], ["(list_longer, repeats)", "(True, 3)"]],
+"b8-3":[["sorted(dog)", "['age', 'breed', 'color', 'legs', 'name']"], ["dog['legs']", "4"]],
+"b8-4":[["(city, first_skill, skills_is_list)", "('London', 'maths', True)"]],
+"b8-5":[["student['skills']", "['HTML', 'Python', 'SQL']"], ["keys_list", "['first_name', 'last_name', 'age', 'country', 'skills']"], ["values_list == list(student.values()) and pairs == list(student.items())", "True", "values_list and pairs match the dictionary"]],
+"b8-6":[["prices", "{'apple': 0.6, 'bread': 2.0, 'milk': 1.2}"], ["round(total, 2)", "1.8"], ["rice_price", "0"]],
+"b9-3":[["'You need 3 more years to learn to drive.' in _out", "True", "prints the message for age 15"]],
+"b9-4":[["'I am 5 years older than you.' in _out", "True", "prints I am 5 years older than you."]],
+"b9-5":[["season", "'Autumn'"]],
+"b9-6":[["fruits", "['banana', 'orange', 'mango', 'lemon', 'apple']"]],
+"b10-3":[["[l.strip() for l in _out.strip().splitlines()]", "[str(n) for n in range(10, -1, -1)]", "prints 10 down to 0"]],
+"b10-4":[["[l.strip() for l in _out.strip().splitlines()]", "[f'{i} x {i} = {i * i}' for i in range(11)]", "prints 0 x 0 = 0 up to 10 x 10 = 100"]],
+"b10-5":[["reversed_fruits", "['lemon', 'mango', 'orange', 'banana']"]],
+"b10-6":[["[l.strip() for l in _out.strip().splitlines()]", "['# # # # # # # #'] * 8", "prints 8 rows of 8 # signs"]],
+"b11-3":[["add_all_nums(1, 2, 3)", "6"], ["add_all_nums(10)", "10"], ["add_all_nums()", "0"]],
+"b11-4":[["greet()", "'Hello, Guest'"], ["greet('Ada')", "'Hello, Ada'"]],
+"b11-5":[["factorial(5)", "120"], ["factorial(0)", "1"], ["factorial(10)", "3628800"]],
+"b11-6":[["[check_season(m) for m in ['October', 'January', 'April', 'July']]", "['Autumn', 'Winter', 'Spring', 'Summer']", "gives the right season for four months"]],
+"b11-7":[["solve_quadratic(1, -3, 2)", "[1.0, 2.0]"], ["solve_quadratic(1, 2, 1)", "[-1.0]"], ["solve_quadratic(1, 0, 1)", "[]"]],
+"b12-3":[["all(__import__('re').fullmatch(r'rgb\\((\\d{1,3}),(\\d{1,3}),(\\d{1,3})\\)', c) and all(0 <= int(x) <= 255 for x in __import__('re').findall(r'\\d+', c)) for c in [rgb_color_gen() for _ in range(30)])", "True", "returns colours like rgb(12,200,99)"], ["len({rgb_color_gen() for _ in range(20)}) > 1", "True", "gives different colours"]],
+"b12-4":[["len(list_of_hexa_colors(5))", "5"], ["all(__import__('re').fullmatch(r'#[0-9a-f]{6}', c) for c in list_of_hexa_colors(30))", "True", "each colour looks like #a3e12f"], ["list_of_hexa_colors(0)", "[]"]],
+"b12-5":[["(lambda a: (sorted(shuffle_list(a)), a))(list(range(20)))", "(list(range(20)), list(range(20)))", "same items, original unchanged"], ["len({tuple(shuffle_list(list(range(10)))) for _ in range(10)}) > 1", "True", "the order changes"]],
+"b12-6":[["all(len(r) == 7 and len(set(r)) == 7 and all(0 <= x <= 9 for x in r) for r in [seven_unique() for _ in range(30)])", "True", "seven different numbers from 0 to 9"]],
+"b13-3":[["non_positive", "[-4, -3, -2, -1, 0]"]],
+"b13-4":[["flat", "[1, 2, 3, 4, 5, 6, 7, 8, 9]"]],
+"b13-5":[["len(table)", "11"], ["table[0]", "(0, 1, 0, 0, 0, 0, 0)"], ["table[2]", "(2, 1, 2, 4, 8, 16, 32)"], ["table[10][-1]", "100000"]],
+"b13-6":[["records", "[{'country': 'FINLAND', 'city': 'HELSINKI'}, {'country': 'SWEDEN', 'city': 'STOCKHOLM'}, {'country': 'NORWAY', 'city': 'OSLO'}]"]],
+"b14-3":[["squares", "[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]"]],
+"b14-4":[["with_land", "['Finland', 'Iceland', 'Ireland', 'Poland', 'England']"], ["starts_with_e", "['Estonia', 'England']"]],
+"b14-5":[["total", "55"], ["sentence", "'Estonia, Finland, Sweden, Denmark, Norway, and Iceland'"]],
+"b14-6":[["count_by_letter(['Finland', 'France', 'Ghana', 'Fiji', 'Greece', 'Peru'])", "{'F': 3, 'G': 2, 'P': 1}"], ["count_by_letter([])", "{}"]],
+"b15-3":[["to_int('42')", "42"], ["to_int('forty')", "0"], ["to_int('')", "0"]],
+"b15-4":[["nordic", "['Finland', 'Sweden', 'Norway', 'Denmark', 'Iceland']"], ["(es, ru)", "('Estonia', 'Russia')"]],
+"b15-5":[["get_item(['a', 'b'], 1)", "'b'"], ["get_item(['a', 'b'], 5)", "'out of range'"], ["get_item([], 0)", "'out of range'"]],
+"b15-6":[["describe('4')", "2.5"], ["describe('x')", "'not a number'"], ["describe('0')", "'cannot divide by zero'"]],
+"b16-3":[["(day, month, year, hour, minute)", "(16, 11, 2026, 14, 30)"]],
+"b16-4":[["'11/16/2026, 14:30:00' in _out", "True", "prints 11/16/2026, 14:30:00"]],
+"b16-5":[["(parsed.year, parsed.month, parsed.day)", "(2019, 12, 5)"]],
+"b16-6":[["days_left", "46"]],
+"b17-3":[["most_frequent_words(text, 2)", "[('practice', 4), ('a', 3)]"], ["most_frequent_words('Go go GO stop', 1)", "[('go', 3)]"]],
+"b17-4":[["points", "[-12, -4, -3, -1, 0, 4, 8]"], ["distance", "20"]],
+"b17-5":[["[is_valid_variable(n) for n in ['first_name', 'first-name', '1first', '_x9', '']]", "[True, False, False, True, False]", "checks five names"]],
+"b17-6":[["clean_text(messy)", "'Hello, world! Python is fun, and Python is powerful. Learn Python.'"], ["top_word", "'python'"]],
+"b18-3":[["count_lines_words('notes.txt')", "(3, 8)"], ["(open('t2.txt', 'w').write('one two\\nthree\\n'), count_lines_words('t2.txt'))[1]", "(2, 3)", "works on another file"]],
+"b18-4":[["find_emails('inbox.txt')", "['ada@example.com', 'bo@mail.org', 'cy.lee@uni.ac.uk']"]],
+"b18-5":[["most_spoken_languages('countries.json', 2)", "[('French', 4), ('English', 3)]"], ["most_spoken_languages('countries.json', 1)", "[('French', 4)]"]],
+"b18-6":[["best_student('scores.csv')", "'Bo'"], ["(open('s2.csv', 'w').write('name,score\\nZed,5\\nYan,100\\n'), best_student('s2.csv'))[1]", "'Yan'", "works on another file"]],
+"b19-3":[["(lambda c: (c.increment(), c.increment(), c.value)[-1])(ClickCounter())", "2", "two clicks give 2"], ["(lambda c: (c.increment(), c.reset(), c.value)[-1])(ClickCounter())", "0", "reset gives 0"]],
+"b19-4":[["Dog('Rex').speak()", "'Rex says woof'"], ["isinstance(Dog('Rex'), Animal)", "True"], ["Dog('Rex').name", "'Rex'"]],
+"b19-5":[["(lambda s: (s.count(), s.sum(), s.min(), s.max(), s.range()))(Statistics(ages))", "(10, 250, 20, 30, 10)", "count, sum, min, max and range"], ["(lambda s: (s.mean(), s.median(), s.mode()))(Statistics(ages))", "(25.0, 25.0, 25)", "mean, median and mode"], ["Statistics([3, 1, 2]).median()", "2"]],
+"b19-6":[["(lambda p: (p.add_income(3000, 'salary'), p.add_income(500, 'gift'), p.add_expense(1200, 'rent'), p.total_income(), p.total_expense(), p.balance())[3:])(PersonAccount('Ada', 'Lovelace'))", "(3500, 1200, 2300)", "income 3500, expenses 1200, balance 2300"], ["PersonAccount('Ada', 'Lovelace').account_info()", "'Ada Lovelace'"], ["PersonAccount('Bo', 'Li').balance()", "0"]],
 
 "p412":[["fizzBuzz(3)","['1', '2', 'Fizz']"],["fizzBuzz(5)","['1', '2', 'Fizz', '4', 'Buzz']"],["fizzBuzz(15)[-1]","'FizzBuzz'"]],
 "p1480":[["runningSum([1, 2, 3, 4])","[1, 3, 6, 10]"],["runningSum([1, 1, 1, 1, 1])","[1, 2, 3, 4, 5]"],["runningSum([3, 1, 2, 10, 1])","[3, 4, 6, 16, 17]"]],
