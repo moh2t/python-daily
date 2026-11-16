@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#2156c4">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script src="firebase-config.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Python Daily">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,6 +57,7 @@ p{margin:0}
 .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chip{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--muted);font-variant-numeric:tabular-nums}
 .chip.streak{background:var(--mark);color:#201a00;font-weight:600}
+button.chip{border:0;font-family:inherit;cursor:pointer;color:var(--ink,inherit);font-weight:600}
 
 .today{background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
 .today .eyebrow{font-size:13px;opacity:.85}
@@ -461,6 +463,7 @@ ul.tests .diff{display:block;font-size:13.5px;color:var(--muted);word-break:brea
     <div class="toplinks">
       <a href="#playground">Playground</a>
       <span class="chip" id="sync">Saved on this device</span>
+      <button class="chip" id="acct" type="button" hidden>Sign in to sync</button>
     </div>
   </header>
   <main id="view"></main>
@@ -2272,6 +2275,59 @@ Promise.all([cap("db"), cap("user")]).then(function(r){
     return pullCloud();
   });
 }).catch(function(){});
+
+/* ---------- Firebase sync (when hosted outside Claude, e.g. GitHub Pages) ---------- */
+function firstSync(uid){
+  // First sign-in on this device: combine this device's progress with the account's,
+  // so signing in on a new phone never wipes out progress made elsewhere.
+  var flag = KEY + "-synced-" + uid, seen = false;
+  try { seen = localStorage.getItem(flag) === "1"; } catch (e) {}
+  if (seen) return pullCloud();
+  setSync("Syncing…");
+  return cloudRef.get().then(function(snap){
+    var remote = snap && snap.exists ? normalise(snap.data()) : null;
+    if (remote) ["status", "code", "read"].forEach(function(k){ state[k] = Object.assign({}, remote[k], state[k]); });
+    try { localStorage.setItem(flag, "1"); } catch (e) {}
+    save(); render();
+  }, function(){ setSync("Saved on this device"); });
+}
+(function(){
+  var cfg = window.FIREBASE_CONFIG, btn = document.getElementById("acct");
+  if (!cfg || !cfg.apiKey || !btn || window.claude) return;
+  var FB = "https://www.gstatic.com/firebasejs/10.12.2/";
+  Promise.all([import(FB + "firebase-app.js"), import(FB + "firebase-auth.js"), import(FB + "firebase-firestore.js")]).then(function(m){
+    if (cloudRef) return; // already syncing through Claude
+    var appM = m[0], authM = m[1], fsM = m[2];
+    var app = appM.initializeApp(cfg), auth = authM.getAuth(app), db = fsM.getFirestore(app);
+    var foot = document.querySelector(".foot");
+    btn.hidden = false;
+    btn.onclick = function(){
+      if (auth.currentUser){ authM.signOut(auth); return; }
+      var prov = new authM.GoogleAuthProvider();
+      authM.signInWithPopup(auth, prov).catch(function(e){
+        var code = e && e.code;
+        if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") return authM.signInWithRedirect(auth, prov);
+        if (code !== "auth/popup-closed-by-user" && code !== "auth/cancelled-popup-request") setSync("Sign-in failed");
+      });
+    };
+    authM.onAuthStateChanged(auth, function(user){
+      if (!user){
+        cloudRef = null; cloudDirty = false; clearTimeout(cloudTimer);
+        btn.textContent = "Sign in to sync"; setSync("Saved on this device");
+        if (foot) foot.textContent = "Go at your own pace. Your code and progress are saved on this device as you type. Sign in to sync them across your devices.";
+        return;
+      }
+      btn.textContent = "Sign out";
+      if (foot) foot.textContent = "Go at your own pace. Signed in as " + (user.email || "you") + ": your code and progress sync across your devices.";
+      var ref = fsM.doc(db, "users", user.uid);
+      cloudRef = {
+        set: function(d){ return fsM.setDoc(ref, d); },
+        get: function(){ return fsM.getDoc(ref).then(function(s){ return {exists: s.exists(), data: function(){ return s.data(); }}; }); }
+      };
+      firstSync(user.uid);
+    });
+  }).catch(function(){});
+})();
 document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullCloud(); });
 
 /* ---------- progress ---------- */
