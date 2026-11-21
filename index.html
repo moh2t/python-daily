@@ -9,6 +9,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="firebase-config.js"></script>
+<script src="guides.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Python Daily">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -98,6 +99,21 @@ pre{margin:0;background:var(--code-bg);color:var(--code-ink);font-family:var(--m
 .readbox{display:flex;align-items:center;gap:8px;font-size:15px}
 .readbox input{width:18px;height:18px;accent-color:var(--accent)}
 details summary{cursor:pointer;font-size:14px;color:var(--muted)}
+.guide h3{font-size:17px;margin-top:14px;scroll-margin-top:16px}
+.guide h3:first-of-type{margin-top:0}
+.guide ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;max-width:65ch}
+.toc{display:flex;flex-wrap:wrap;gap:6px}
+.toc button{border:1px solid var(--line);background:var(--sunk);color:inherit;font:inherit;font-size:13px;border-radius:999px;padding:4px 10px;cursor:pointer}
+.ex{display:flex;flex-direction:column}
+.ex pre{border-radius:10px 10px 0 0}
+.ex pre:only-child,.ex pre.plain{border-radius:10px}
+.ex pre.plain{background:var(--sunk);color:var(--ink)}
+.ex .exout{border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;background:var(--sunk);padding:8px 14px 12px}
+.ex .exout.noout{padding:6px 10px}
+.ex .exhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.ex .exout pre{background:none;color:var(--ink);padding:6px 0 0;border-radius:0;font-size:13.5px;white-space:pre-wrap;word-break:break-word}
+.ex .exout pre.err{color:var(--hard)}
+.ex button.try{border:1px solid var(--line);background:var(--surface);color:inherit;font:inherit;font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;border-radius:7px;padding:3px 9px;cursor:pointer}
 details pre{margin-top:8px}
 
 .prob{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
@@ -2878,8 +2894,10 @@ function lessonView(L){
       return '<a href="' + SRC + s + '">the 30 Days of Python lesson' + (L.src.length > 1 ? ' (part ' + (i + 1) + ')' : '') + '</a>';
     }).join(" and ") + '</p>';
   }
-  if (!L.worked) h += '<label class="readbox"><input type="checkbox" id="read-' + L.rkey + '"' + (state.read[L.rkey] ? ' checked' : '') + '> I have read this lesson</label>';
+  var G = window.GUIDES && window.GUIDES[L.slug];
+  if (!L.worked && !G) h += '<label class="readbox"><input type="checkbox" id="read-' + L.rkey + '"' + (state.read[L.rkey] ? ' checked' : '') + '> I have read this lesson</label>';
   h += '</section>';
+  if (G) h += guideHtml(G, L);
   var w = L.worked;
   if (w){
     h += '<section class="sec"><h2>Worked problem: ' + esc(w.title) + '</h2>';
@@ -2919,6 +2937,51 @@ function lessonView(L){
   view.style.cssText = "display:flex;flex-direction:column;gap:16px";
   initEditors();
 }
+
+var tryCode = [];
+function guideHtml(G, L){
+  tryCode = [];
+  var h = '<section class="sec guide"><h2>In detail</h2>';
+  h += '<p class="cx">Every example below has been run, and its real output is shown under it. Press Try it to copy an example into the Playground, change it, and run it yourself.</p>';
+  h += '<nav class="toc" aria-label="Sections in this lesson">';
+  G.forEach(function(s, i){ h += '<button type="button" data-goto="g' + i + '">' + esc(s.h) + '</button>'; });
+  h += '</nav>';
+  G.forEach(function(s, i){
+    h += '<h3 id="g' + i + '">' + esc(s.h) + '</h3>';
+    s.parts.forEach(function(p){
+      if (p.p != null) h += '<p>' + rich(p.p) + '</p>';
+      else if (p.ul) h += '<ul>' + p.ul.map(function(li){ return '<li>' + rich(li) + '</li>'; }).join("") + '</ul>';
+      else if (p.text) h += '<div class="ex"><pre class="plain">' + esc(p.code) + '</pre></div>';
+      else {
+        var k = tryCode.push(p.code) - 1, btn = '<button type="button" class="try" data-try="' + k + '">Try it</button>';
+        h += '<div class="ex"><pre>' + esc(p.code) + '</pre>';
+        if (p.out == null) h += '<div class="exout noout"><div class="exhead"><span>Not run here</span>' + btn + '</div></div>';
+        else {
+          var lines = p.out.split("\n"), last = lines[lines.length - 1], isErr = !!p.err;
+          h += '<div class="exout"><div class="exhead"><span>Output</span>' + btn + '</div>';
+          if (isErr && lines.length > 1) h += '<pre>' + esc(lines.slice(0, -1).join("\n")) + '</pre>';
+          if (p.out === "") h += '<pre>(nothing printed)</pre>';
+          else h += isErr ? '<pre class="err">' + esc(last) + '</pre>' : '<pre>' + esc(p.out) + '</pre>';
+          h += '</div>';
+        }
+        h += '</div>';
+      }
+    });
+  });
+  h += '<label class="readbox"><input type="checkbox" id="read-' + L.rkey + '"' + (state.read[L.rkey] ? ' checked' : '') + '> I have read this lesson</label>';
+  h += '</section>';
+  return h;
+}
+view.addEventListener("click", function(ev){
+  var go = ev.target.closest("button[data-goto]");
+  if (go){ var el = document.getElementById(go.getAttribute("data-goto")); if (el) el.scrollIntoView({behavior:"smooth", block:"start"}); return; }
+  var t = ev.target.closest("button[data-try]"); if (!t) return;
+  var code = tryCode[Number(t.getAttribute("data-try"))]; if (code == null) return;
+  var cur = state.code.playground;
+  if (cur != null && cur.trim() && cur !== PLAY_START && cur !== code + "\n" && !confirm("Replace the code in your Playground with this example?")) return;
+  state.code.playground = code + "\n"; save();
+  location.hash = "#playground";
+});
 
 var PLAY_START = "# Type any Python here, then press Run\n\nname = \"Moh\"\nfor i in range(3):\n    print(f\"Hello {name}, line {i + 1}\")\n";
 function playgroundView(){
